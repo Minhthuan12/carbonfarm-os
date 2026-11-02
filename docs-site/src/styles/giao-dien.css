@@ -1,0 +1,13 @@
+/* SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors */
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Cùng bảng màu với web Tầng 2: mòng két đậm cho nhấn, hổ phách cho điểm nổi. */
+:root {
+	--sl-color-accent-low: #dcebe8;
+	--sl-color-accent: #024f46;
+	--sl-color-accent-high: #013a34;
+}
+:root[data-theme='dark'] {
+	--sl-color-accent-low: #0f2f2a;
+	--sl-color-accent: #5fbfae;
+	--sl-color-accent-high: #c9ece5;
+}

@@ -71,6 +71,13 @@ tasks:
       - yamllint -s .
       - ruff check .
 
+  tai-lieu:
+    desc: "Build trang tài liệu Starlight vào docs-site/dist (cần Node 22): nội dung chép từ docs/, methodology/, README"
+    dir: docs-site
+    cmds:
+      - npm ci --no-audit --no-fund
+      - npm run build
+
   license:
     desc: Thêm header SPDX cho tệp mới
     cmds:

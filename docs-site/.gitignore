@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Sinh ra khi build: nội dung chép từ docs/, ảnh, kết quả build
+src/content/docs/
+public/anh/
+src/assets/
+dist/
+.astro/
+node_modules/
