@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.4.1](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.4.0...v0.4.1) (2026-11-02)
+
+
+### Tài liệu
+
+* **roadmap:** ghi tiến độ sprint 4 và v0.4.0; README trỏ v0.4.0; task seed mô tả đúng cách nạp dữ liệu giả ([#62](https://github.com/carbonfarm-os/carbonfarm-os/issues/62)) ([d53abab](https://github.com/carbonfarm-os/carbonfarm-os/commit/d53abab48927db7b31fa798fd9ce9af13fbf316e))
+* **site:** trang tài liệu Starlight, nội dung chép từ docs/, methodology/, README ([#53](https://github.com/carbonfarm-os/carbonfarm-os/issues/53)) ([#67](https://github.com/carbonfarm-os/carbonfarm-os/issues/67)) ([51a54e3](https://github.com/carbonfarm-os/carbonfarm-os/commit/51a54e38f84489e63e23b6a4b7bfd1d82fa5f0a7))
+
+
+### Kiểm thử
+
+* **mrv:** kiểm thử dang_ky_stac trên STAC giả lập, gồm ca 409 khi tạo bộ sưu tập song song ([#64](https://github.com/carbonfarm-os/carbonfarm-os/issues/64)) ([#66](https://github.com/carbonfarm-os/carbonfarm-os/issues/66)) ([0fa2051](https://github.com/carbonfarm-os/carbonfarm-os/commit/0fa2051336f70873e9f86fbc3b4cdba8777fc481))
+
+
+### Hạ tầng và CI
+
+* **tai-lieu:** đăng trang tài liệu lên GitHub Pages khi main đổi tài liệu; README trỏ trang ([#68](https://github.com/carbonfarm-os/carbonfarm-os/issues/68)) ([abc19d8](https://github.com/carbonfarm-os/carbonfarm-os/commit/abc19d80939e1beff5a9e66f6a09708e93a3a88e))
+
 ## [0.4.0](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.3.0...v0.4.0) (2026-10-30)
 
 
