@@ -5,7 +5,7 @@
 Mỗi dòng `- [ ]` là **một issue** (mẫu "Việc cần làm"), đưa vào sprint 1 tuần trên GitHub Projects. Vai:
 - **V1** – nền tảng Tầng 1, DevOps, bảo mật (`Minhthuan12`, trưởng nhóm)
 - **V2** – dữ liệu, ảnh vệ tinh, MRV, sổ cái (`Nhvuu918`)
-- **V3** – web, bản đồ, dashboard, connector (thành viên 3, bổ sung sau)
+- **V3** – web, bản đồ, dashboard, connector (`tamdoannguyen06-cmyk`)
 
 Hạn nộp 17:00 06/12/2026; PoF chấm theo kho lúc gửi bài. **Đóng băng tính năng 29/11.**
 
