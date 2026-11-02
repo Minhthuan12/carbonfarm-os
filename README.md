@@ -31,6 +31,8 @@ Bản MVP: một hệ sinh thái (rừng ngập mặn), một khu vực mẫu, *
 
 ![Sơ đồ kiến trúc hai tầng của CarbonFarm OS](docs/images/kien-truc.webp)
 
+Trang tài liệu (kiến trúc, phương pháp MRV, ADR, dùng thử, có tìm kiếm): https://carbonfarm-os.github.io/carbonfarm-os/
+
 Chi tiết và sơ đồ: [`docs/architecture.md`](docs/architecture.md). Các quyết định: [`docs/adr/`](docs/adr/).
 *Tier 1 is a generic headless platform; tier 2 holds the carbon domain; connectors are pluggable mocks. See `docs/architecture.md` and the ADRs.*
 

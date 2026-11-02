@@ -25,5 +25,5 @@ Dùng Starlight trong `docs-site/`. Nội dung **không** viết lại: `docs-si
 ## Hệ quả
 - Starlight, Astro chỉ chạy lúc build; sản phẩm là HTML tĩnh, không nằm trong image nào của hệ thống. Khai ở mục công cụ phát triển của `DEPENDENCIES.md`.
 - Gói gián tiếp có libvips (LGPL-3.0-or-later, qua `sharp`) chỉ dùng xử lý ảnh lúc build, không phân phối trong repo.
-- CI build trang ở mọi PR (job `tai-lieu`). Công bố lên GitHub Pages cần bật Pages cho repo: việc riêng, khi người hướng dẫn đồng ý.
+- CI build trang ở mọi PR (job `tai-lieu`). Workflow `tai-lieu.yml` đăng lên GitHub Pages (https://carbonfarm-os.github.io/carbonfarm-os/) mỗi khi `main` đổi tài liệu.
 - Sơ đồ Mermaid hiện dạng mã trên site; ảnh `docs/images/kien-truc.webp` thay cho phần tóm tắt.
