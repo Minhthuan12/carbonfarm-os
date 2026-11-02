@@ -1,0 +1,16 @@
+{
+	"name": "carbonfarm-os-tai-lieu",
+	"private": true,
+	"type": "module",
+	"license": "GPL-3.0-or-later",
+	"scripts": {
+		"chep": "node scripts/chep-tai-lieu.mjs",
+		"dev": "npm run chep && astro dev",
+		"build": "npm run chep && astro build",
+		"preview": "astro preview"
+	},
+	"dependencies": {
+		"@astrojs/starlight": "0.42.7",
+		"astro": "7.4.2"
+	}
+}
