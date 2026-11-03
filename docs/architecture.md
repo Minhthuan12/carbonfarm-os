@@ -70,6 +70,8 @@ flowchart TB
 | `gateway/routes.yaml` | ghép vào cấu hình APISIX khi khởi động |
 | schema PostgreSQL | lộ qua GraphQL khi thêm vào `GRAPHQL_SCHEMAS` (`.env`) |
 
+Hướng dẫn viết miền mới, kèm miền mẫu cắm–rút: [`docs/viet-mien.md`](viet-mien.md).
+
 **Lỗi nghiệp vụ:** hàm/trigger của miền báo lỗi bằng SQLSTATE bắt đầu bằng `U` (lớp PostgreSQL để dành cho ứng dụng) → PostGraphile trả nguyên thông báo, `extensions.code`, `extensions.hint`; mọi lỗi khác bị che, chỉ trả mã tra log (`platform/postgraphile/graphile.config.mjs`).
 
 **MRV (ADR 0005):** người dùng chỉ đi qua GraphQL (`carbonYeuCauMrv`, `carbonDuyetKetQuaMrv`, quyền và luật trong CSDL). Tiến trình `carbon-mrv` thăm dò `carbon.ket_qua_mrv`: dòng mới → tạo lượt chạy Prefect `mrv-lo-dat/carbon`; có quyết định → resume lượt chạy đang PAUSED; được duyệt → flow ghi Dolt. Vai đăng nhập của miền khai ở `domains/<miền>/db/vai-dang-nhap.txt`, Tầng 1 đặt mật khẩu từ OpenBao.
