@@ -76,7 +76,8 @@ services:
       KC_DB_USERNAME: keycloak
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_ADMIN_USER:-admin}
       KC_HTTP_RELATIVE_PATH: /auth
-      KC_HOSTNAME: http://localhost:${GATEWAY_PORT:-9080}/auth
+      KC_HOSTNAME: ${PUBLIC_URL:-http://localhost:${GATEWAY_PORT:-9080}}/auth
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:${GATEWAY_PORT:-9080}}  # redirect URI của client web trong realm
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
       KC_PROXY_HEADERS: xforwarded
       KC_HEALTH_ENABLED: "true"
@@ -111,7 +112,7 @@ services:
     image: carbonfarm/postgraphile:5.1.5
     environment:
       JWKS_URL: http://keycloak:8080/auth/realms/dxos/protocol/openid-connect/certs
-      JWT_ISSUER: http://localhost:${GATEWAY_PORT:-9080}/auth/realms/dxos
+      JWT_ISSUER: ${PUBLIC_URL:-http://localhost:${GATEWAY_PORT:-9080}}/auth/realms/dxos
       GRAPHQL_SCHEMAS: ${GRAPHQL_SCHEMAS:-nen_tang}
     volumes:
       - bimat:/run/bimat:ro
