@@ -6,7 +6,7 @@ services:
     build: ../domains/carbon/web
     image: carbonfarm/carbon-web:0.0.0
     environment:
-      ORIGIN: http://localhost:${GATEWAY_PORT:-9080}
+      ORIGIN: ${PUBLIC_URL:-http://localhost:${GATEWAY_PORT:-9080}}
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/"]
       interval: 3s
