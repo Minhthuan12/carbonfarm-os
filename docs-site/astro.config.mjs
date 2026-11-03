@@ -23,6 +23,7 @@ export default defineConfig({
 				{ label: 'Giới thiệu', link: '/' },
 				{ label: 'Dùng thử', link: '/dung-thu/' },
 				{ label: 'Kiến trúc', link: '/kien-truc/' },
+				{ label: 'Viết miền mới (cắm–rút)', link: '/viet-mien/' },
 				{ label: 'Phương pháp MRV', items: [{ autogenerate: { directory: 'phuong-phap' } }] },
 				{ label: 'Quyết định kiến trúc (ADR)', items: [{ autogenerate: { directory: 'adr' } }] },
 				{ label: 'Lộ trình', link: '/lo-trinh/' }

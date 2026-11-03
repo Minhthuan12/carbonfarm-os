@@ -17,6 +17,7 @@ const TRANG = new Map([
 	['README.md', ''],
 	['docs/thu-nghiem.md', 'dung-thu'],
 	['docs/architecture.md', 'kien-truc'],
+	['docs/viet-mien.md', 'viet-mien'],
 	['docs/roadmap.md', 'lo-trinh'],
 	['methodology/README.md', 'phuong-phap'],
 	['methodology/v0.1-rung-ngap-man-ipcc-tier1.md', 'phuong-phap/v0-1-rung-ngap-man-ipcc-tier1']
