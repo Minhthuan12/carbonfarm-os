@@ -4,6 +4,9 @@
 # (platform/apisix/apisix.yaml) lúc khởi động; vì vậy tệp chỉ gồm các mục route, cùng mức thụt lề.
   - id: carbon-kiem-chung
     # Công khai, KHÔNG kiểm JWT: ai cũng tra được sổ cái. Chỉ GET, giới hạn 60 yêu cầu/phút mỗi địa chỉ IP.
+    # Sau Cloudflare + reverse proxy, remote_addr luôn là proxy: đếm theo CF-Connecting-IP (IP thật Cloudflare gửi kèm);
+    # không có header đó (máy dev) thì biến rỗng và chỉ còn remote_addr. Header giả được khi gọi thẳng vào máy chủ,
+    # chấp nhận được vì đây chỉ là giới hạn tần suất, không phải kiểm soát truy cập.
     uris: ["/kiem-chung/api/*"]
     methods: ["GET"]
     plugins:
@@ -12,8 +15,8 @@
       limit-count:
         count: 60
         time_window: 60
-        key_type: var
-        key: remote_addr
+        key_type: var_combination
+        key: $http_cf_connecting_ip $remote_addr
         rejected_code: 429
         rejected_msg: "Quá nhiều yêu cầu kiểm chứng, thử lại sau một phút"
     upstream:
