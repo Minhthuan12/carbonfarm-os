@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.5.0](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.4.1...v0.5.0) (2026-11-03)
+
+
+### Tính năng mới
+
+* **platform:** PUBLIC_URL – địa chỉ công khai khi chạy sau reverse proxy HTTPS ([#40](https://github.com/carbonfarm-os/carbonfarm-os/issues/40)) ([#69](https://github.com/carbonfarm-os/carbonfarm-os/issues/69)) ([44747c2](https://github.com/carbonfarm-os/carbonfarm-os/commit/44747c26289964fb23b9e34db215c06e8a37db1f))
+
+
+### Sửa lỗi
+
+* **kiem-chung:** giới hạn tần suất theo IP thật của người dùng khi chạy sau Cloudflare ([#71](https://github.com/carbonfarm-os/carbonfarm-os/issues/71)) ([#72](https://github.com/carbonfarm-os/carbonfarm-os/issues/72)) ([90c9c34](https://github.com/carbonfarm-os/carbonfarm-os/commit/90c9c34dd2f9efaf83de872a12dc0722f160e371))
+
+
+### Tài liệu
+
+* **mien:** hướng dẫn viết miền cắm–rút và miền mẫu thủy sản ([#73](https://github.com/carbonfarm-os/carbonfarm-os/issues/73)) ([1fd921a](https://github.com/carbonfarm-os/carbonfarm-os/commit/1fd921a2f8bac6edf7cd888fa0fad5db662a65f3))
+
 ## [0.4.1](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.4.0...v0.4.1) (2026-11-02)
 
 
