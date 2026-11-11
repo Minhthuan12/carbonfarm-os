@@ -159,7 +159,7 @@
 
 <div class="chi-tiet">
 	<div class="vet">
-		<button type="button" class="chu" onclick={onDong}>Lô đất</button><span>/</span>
+		<button type="button" class="chu" onclick={onDong}>← Tất cả lô đất</button>
 	</div>
 	<div class="tieu-de">
 		<h1>{lo.ten}</h1>
@@ -183,7 +183,7 @@
 	{#if dangTai}
 		<p class="phu">Đang tải…</p>
 	{:else if !ketQua.length}
-		<p class="phu">Chưa có kết quả đo cho lô này.{#if laCanBo} Chọn kỳ rồi bấm Yêu cầu đo.{/if}</p>
+		<p class="phu">Chưa có kết quả đo cho lô này.{#if laCanBo}{' '}Chọn kỳ rồi bấm Yêu cầu đo.{/if}</p>
 	{/if}
 	{#each ketQua as k (k.rowId)}
 		<article class="kq" data-trang-thai={k.trangThai}>
@@ -307,7 +307,8 @@
 	}
 	.yeu-cau {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		/* ô ngày có bề rộng tối thiểu riêng: cho xuống dòng khi thẻ hẹp thay vì tràn ngang */
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
 		gap: 12px;
 		align-items: end;
 		padding: 16px;
@@ -316,6 +317,10 @@
 	}
 	.yeu-cau .nut {
 		grid-column: 1 / -1;
+	}
+	.yeu-cau label,
+	.yeu-cau input {
+		min-width: 0;
 	}
 	h2 {
 		margin-top: 8px;
