@@ -22,6 +22,7 @@ export default defineConfig({
 			sidebar: [
 				{ label: 'Giới thiệu', link: '/' },
 				{ label: 'Dùng thử', link: '/dung-thu/' },
+				{ label: 'Triển khai demo', link: '/trien-khai/' },
 				{ label: 'Kiến trúc', link: '/kien-truc/' },
 				{ label: 'Viết miền mới (cắm–rút)', link: '/viet-mien/' },
 				{ label: 'Phương pháp MRV', items: [{ autogenerate: { directory: 'phuong-phap' } }] },

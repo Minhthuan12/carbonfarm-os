@@ -16,6 +16,7 @@ const BASE = (process.env.BASE ?? '/carbonfarm-os').replace(/\/$/, '');
 const TRANG = new Map([
 	['README.md', ''],
 	['docs/thu-nghiem.md', 'dung-thu'],
+	['docs/trien-khai.md', 'trien-khai'],
 	['docs/architecture.md', 'kien-truc'],
 	['docs/viet-mien.md', 'viet-mien'],
 	['docs/roadmap.md', 'lo-trinh'],
