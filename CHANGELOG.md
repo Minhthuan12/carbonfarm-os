@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.1](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.5.0...v0.5.1) (2026-11-11)
+
+
+### Sửa lỗi
+
+* **web:** màn hình cán bộ – ô ngày tràn thẻ, thiếu dấu cách, trạng thái tải, chọn lô trên điện thoại ([#75](https://github.com/carbonfarm-os/carbonfarm-os/issues/75)) ([#78](https://github.com/carbonfarm-os/carbonfarm-os/issues/78)) ([a0ea843](https://github.com/carbonfarm-os/carbonfarm-os/commit/a0ea8436658442c6cac6eeee47d926c778a9ef50))
+
+
+### Tài liệu
+
+* **readme:** đồng bộ README, hướng dẫn dùng thử, lộ trình với v0.5.0 và demo công khai ([#74](https://github.com/carbonfarm-os/carbonfarm-os/issues/74)) ([#77](https://github.com/carbonfarm-os/carbonfarm-os/issues/77)) ([102d173](https://github.com/carbonfarm-os/carbonfarm-os/commit/102d173be04342d5817dba95a505f334ea9a3a4e))
+* **trien-khai:** hướng dẫn triển khai demo công khai sau reverse proxy HTTPS ([#40](https://github.com/carbonfarm-os/carbonfarm-os/issues/40)) ([#76](https://github.com/carbonfarm-os/carbonfarm-os/issues/76)) ([6d6a2bd](https://github.com/carbonfarm-os/carbonfarm-os/commit/6d6a2bda0381fb883668ae978f1006caa19cd9a8))
+
 ## [0.5.0](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.4.1...v0.5.0) (2026-11-03)
 
 
