@@ -12,8 +12,8 @@
 
 Kho mã: https://github.com/carbonfarm-os/carbonfarm-os · Kế hoạch sprint: https://github.com/orgs/carbonfarm-os/projects/1
 
-> ⚠️ **Điều kiện dự thi · Eligibility.** Dự án do nhóm DTU3 làm cho OLP PMNM 2026. Trường đã có 2 đội (DTU_DZ_1, DTU_DZ_2) và thể lệ cho phép tối đa 2 đội mỗi trường. DTU3 chỉ dự thi được nếu thay một đội hoặc đăng ký qua trường khác. **Trạng thái: CHỜ XÁC NHẬN.**
-> *DTU3 can only enter if it replaces one of the school's two registered teams or enters through another school. Status: pending confirmation.*
+> ⚠️ **Điều kiện dự thi · Eligibility.** Dự án do nhóm DTU3 làm cho OLP PMNM 2026. Thể lệ cho phép tối đa 2 đội mỗi trường; một đội của trường đã rút và DTU3 đăng ký thay suất đó. **Trạng thái: chờ trường xác nhận.**
+> *One of the school's two registered teams has withdrawn and DTU3 is registering in its place. Status: pending confirmation by the school.*
 
 ## Giới thiệu · Introduction
 CarbonFarm OS số hóa **hợp tác xã** như một doanh nghiệp: quản lý xã viên, lô đất, hồ sơ đo lường – báo cáo – xác minh (MRV) và doanh thu từ tín chỉ carbon. Luồng chính:
@@ -37,7 +37,7 @@ Chi tiết và sơ đồ: [`docs/architecture.md`](docs/architecture.md). Các q
 *Tier 1 is a generic headless platform; tier 2 holds the carbon domain; connectors are pluggable mocks. See `docs/architecture.md` and the ADRs.*
 
 ## Bắt đầu · Getting started
-Bản mới nhất **v0.4.0** chạy đủ luồng chính trên một máy: Tầng 1 (OpenBao, PostgreSQL + PostGIS + pgSTAC, Keycloak, APISIX, PostGraphile, Versity S3 + STAC + TiTiler, Prefect, Valkey, Dolt) và Tầng 2 (MRV engine, web, connector mô phỏng, Metabase).
+Bản mới nhất **v0.5.0** chạy đủ luồng chính trên một máy: Tầng 1 (OpenBao, PostgreSQL + PostGIS + pgSTAC, Keycloak, APISIX, PostGraphile, Versity S3 + STAC + TiTiler, Prefect, Valkey, Dolt) và Tầng 2 (MRV engine, web, connector mô phỏng, Metabase).
 
 | Địa chỉ | Nội dung |
 |---|---|
@@ -45,8 +45,8 @@ Bản mới nhất **v0.4.0** chạy đủ luồng chính trên một máy: Tầ
 | http://localhost:9080/kiem-chung | Tra tín chỉ trên sổ cái, không cần tài khoản |
 | http://127.0.0.1:3001/ | Dashboard hợp tác xã (Metabase OSS) |
 
-Người dùng mẫu (`canbo-htx-mau`, `canbo-htx-mau-2`, `xavien-mau-1`…) có mật khẩu do OpenBao sinh khi dựng: `docker compose exec keycloak cat /run/bimat/<tên>`. Lần chạy đầu OpenBao ghi khóa mở vào `.data/openbao/` (ngoài git) – **giữ kín, mất là không mở được dữ liệu OpenBao**. Dùng thử theo kịch bản: [`docs/thu-nghiem.md`](docs/thu-nghiem.md).
-*v0.4.0 runs the full flow locally; sample users get generated passwords; see `docs/thu-nghiem.md` for a guided trial.*
+Người dùng mẫu (`canbo-htx-mau`, `canbo-htx-mau-2`, `xavien-mau-1`…) có mật khẩu do OpenBao sinh khi dựng: `docker compose exec keycloak cat /run/bimat/mk-<tên>` (ví dụ `mk-canbo-htx-mau`). Lần chạy đầu OpenBao ghi khóa mở vào `.data/openbao/` (ngoài git) – **giữ kín, mất là không mở được dữ liệu OpenBao**. Dùng thử theo kịch bản: [`docs/thu-nghiem.md`](docs/thu-nghiem.md).
+*v0.5.0 runs the full flow locally; sample users get generated passwords; see `docs/thu-nghiem.md` for a guided trial.*
 
 ```bash
 cp .env.example .env      # cấu hình máy dev · dev configuration
@@ -57,7 +57,10 @@ task check                # SPDX + compose, trước mọi PR · before every PR
 Môi trường dev dùng chung: Dev Container hoặc `pixi install` (xem [`CONTRIBUTING.md`](CONTRIBUTING.md)).
 
 ## Đóng góp · Contributing
-Trunk-based, Conventional Commits, PR do chủ vùng mã duyệt, phát hành tự động bằng release-please: [`CONTRIBUTING.md`](CONTRIBUTING.md). Quy tắc ứng xử: [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md). Báo lỗi qua GitHub Issues.
+Trunk-based, Conventional Commits, PR do chủ vùng mã duyệt, phát hành tự động bằng release-please: [`CONTRIBUTING.md`](CONTRIBUTING.md). Quy tắc ứng xử: [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+- Báo lỗi, góp ý: [GitHub Issues](https://github.com/carbonfarm-os/carbonfarm-os/issues) (mẫu "Báo lỗi", "Phản hồi dùng thử"); hỏi đáp: [Discussions](https://github.com/carbonfarm-os/carbonfarm-os/discussions).
+- Việc cho người mới: nhãn [`good first issue`](https://github.com/carbonfarm-os/carbonfarm-os/labels/good%20first%20issue).
+- Thêm một miền nghiệp vụ mới mà không sửa Tầng 1 (cắm–rút), kèm miền mẫu thủy sản: [`docs/viet-mien.md`](docs/viet-mien.md).
 
 ## Giấy phép · License
 Mã nguồn: **GPL-3.0-or-later** ([`LICENSE`](LICENSE)). Chọn copyleft để mọi bản sửa đổi của nền tảng MRV công khai cho cộng đồng, giúp con số carbon kiểm chứng được. Thành phần bên thứ ba: [`DEPENDENCIES.md`](DEPENDENCIES.md), [`NOTICE`](NOTICE).

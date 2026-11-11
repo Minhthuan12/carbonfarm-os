@@ -35,13 +35,13 @@ Hạn nộp 17:00 06/12/2026; PoF chấm theo kho lúc gửi bài. **Đóng băn
 - [x] V3 · Connector mock Registry (theo TT 11/2026/TT-BNNMT), Buyer, Bank, mỗi cái có OpenAPI (#35)
 - [x] V2 · Ví tín chỉ, cấp và chuyển nhượng ghi vào Dolt; trang kiểm chứng theo mã băm commit (#36, #37, #38)
 - [x] V3 · Dashboard hợp tác xã trên Metabase OSS (#39)
-- [ ] V1 · Demo công khai trên VPS + HTTPS
+- [x] V1 · Demo công khai trên VPS + HTTPS: https://carbonfarm.dzfullstack.com (#40)
 - [x] V1 · Ra **v0.3.0** (#41)
 
 ## Sprint 4 · 23–29/11 · Người dùng thử, sửa lỗi, tài liệu · đóng băng 29/11
 - [ ] Mọi người · Mời 3–5 người dùng thử (cán bộ hợp tác xã, sinh viên), mỗi phản hồi một issue (#54)
 - [ ] Mọi người · Sửa lỗi theo phản hồi
-- [ ] V3 · Trang tài liệu Starlight (README, kiến trúc, ADR, phương pháp MRV) (#53)
+- [x] V3 · Trang tài liệu Starlight (README, kiến trúc, ADR, phương pháp MRV): https://carbonfarm-os.github.io/carbonfarm-os/ (#53)
 - [x] V1 · Kịch bản demo 15 phút, phân vai trình bày (#56)
 - [x] V1 · Mẫu phản hồi và hướng dẫn dùng thử (#55); giao diện mới (#51); sửa lỗi MRV song song (#60); ra **v0.4.0**
 

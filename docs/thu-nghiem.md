@@ -7,14 +7,14 @@ Tài liệu cho người được mời thử CarbonFarm OS (cán bộ hợp tá
 Mọi hợp tác xã, xã viên, lô đất, người mua trong bản thử là **dữ liệu giả**. Registry, người mua, ngân hàng là dịch vụ mô phỏng; không có tiền hay tín chỉ thật nào được chuyển.
 
 ## Dành cho thành viên đội: chuẩn bị một buổi thử
-1. Chạy hệ thống trên volume trống (hoặc dùng bản demo công khai khi #40 xong):
+1. Chạy hệ thống trên volume trống, hoặc dùng bản demo công khai https://carbonfarm.dzfullstack.com (bỏ qua bước này; mật khẩu người dùng mẫu do thành viên giữ máy chủ cung cấp):
    ```bash
    cp .env.example .env
    task up             # .env.example bật NAP_DU_LIEU_MAU=true: nạp sẵn hợp tác xã, xã viên, lô đất giả
    task smoke          # kiểm hệ thống chạy đúng trước khi mời người thử
    ```
    Người thử tự tạo dữ liệu qua nhiệm vụ 3–5; muốn nhiệm vụ 1 có sẵn tín chỉ để tra thì thành viên làm trước một lượt nhiệm vụ 3–5.
-2. Lấy mật khẩu người dùng mẫu (OpenBao sinh lúc dựng, mỗi máy một khác) bằng `docker compose exec keycloak cat /run/bimat/<tên>` và **đưa trực tiếp** cho người thử. Không ghi mật khẩu vào issue, tài liệu hay tin nhắn nhóm.
+2. Lấy mật khẩu người dùng mẫu (OpenBao sinh lúc dựng, mỗi máy một khác) bằng `docker compose exec keycloak cat /run/bimat/mk-<tên>` (ví dụ `mk-canbo-htx-mau`) và **đưa trực tiếp** cho người thử. Không ghi mật khẩu vào issue, tài liệu hay tin nhắn nhóm.
 3. Người thử không có tài khoản GitHub: thành viên ghi phản hồi hộ bằng mẫu trên, ghi rõ "ghi hộ" và vai trò của người thử, không ghi họ tên thật.
 4. Sau buổi thử: gắn người phụ trách cho từng issue `phan-hoi`; lỗi sửa trong sprint 4 (trước đóng băng 29/11/2026).
 
@@ -25,7 +25,7 @@ Mọi hợp tác xã, xã viên, lô đất, người mua trong bản thử là 
 | `xavien-mau-1` | xã viên | xem lô của mình |
 
 ## Sáu nhiệm vụ
-Địa chỉ dưới đây là máy chạy cục bộ; với bản demo công khai thay `http://localhost:9080` bằng tên miền của đội.
+Địa chỉ dưới đây là máy chạy cục bộ; với bản demo công khai thay `http://localhost:9080` bằng `https://carbonfarm.dzfullstack.com`.
 
 ### 1. Xem trang chủ, tra một tín chỉ (không cần đăng nhập)
 Mở http://localhost:9080/. Đọc trang chủ, rồi ở ô "Ai cũng tra được một tín chỉ" bấm **Tra cứu** khi để trống (thử với sê-ri mới nhất). Bấm "Xem từng bản ghi".
