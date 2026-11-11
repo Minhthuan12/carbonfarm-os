@@ -67,6 +67,7 @@
 	let loChon = $state<Lo | null>(null);
 	let lopNdvi = $state<string | null>(null);
 	let tenHtx = $state('');
+	let daTai = $state(false);
 	let timLo = $state('');
 	const loLoc = $derived(lo.filter((l) => l.ten.toLocaleLowerCase('vi').includes(timLo.trim().toLocaleLowerCase('vi'))));
 	const tongHa = $derived(lo.reduce((t, l) => t + Number(l.dienTichHa), 0));
@@ -135,6 +136,7 @@
 			laCanBo = d.allCarbonCanBoHtxes.totalCount > 0 || (nd?.vai.includes('quan_tri') ?? false);
 			if (!form.xaVienId && xaVien.length) form.xaVienId = xaVien[0].rowId;
 			loiTai = '';
+			daTai = true;
 			veLai();
 		} catch (e) {
 			loiTai = (e as Error).message;
@@ -148,6 +150,8 @@
 		const b = new LngLatBounds();
 		for (const d of l.ranhGioi.coordinates[0]) b.extend(d);
 		banDo?.fitBounds(b, { padding: 80, maxZoom: 15 });
+		// Điện thoại: danh sách lô nằm trên bản đồ, chọn xong cuộn tới bản đồ để thấy lô và chi tiết bên dưới
+		if (matchMedia('(max-width: 900px)').matches) khungBanDo?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 	}
 
 	function boChon() {
@@ -312,7 +316,7 @@
 						</button>
 					</li>
 				{:else}
-					<li class="trong">{timLo ? 'Không có lô nào khớp' : 'Chưa có lô nào bạn được xem'}</li>
+					<li class="trong">{!daTai && !loiTai ? 'Đang tải…' : timLo ? 'Không có lô nào khớp' : 'Chưa có lô nào bạn được xem'}</li>
 				{/each}
 			</ul>
 			{#if xaVien.length && !dangVe}
