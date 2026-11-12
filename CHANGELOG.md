@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.5.1...v0.6.0) (2026-11-12)
+
+
+### Tính năng mới
+
+* **web:** làm mới giao diện web, chỉ hiện dữ liệu thật từ API và sổ cái ([#80](https://github.com/carbonfarm-os/carbonfarm-os/issues/80)) ([#81](https://github.com/carbonfarm-os/carbonfarm-os/issues/81)) ([016530b](https://github.com/carbonfarm-os/carbonfarm-os/commit/016530b02ffb169ecd896a72fa0984a2b6ffa202))
+
 ## [0.5.1](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.5.0...v0.5.1) (2026-11-11)
 
 
