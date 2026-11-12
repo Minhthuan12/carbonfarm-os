@@ -482,7 +482,7 @@
 							</label>
 						</div>
 						{#if lechKhaiBao !== null && lechKhaiBao > 0.1}
-							<p class="canh-bao">Lệch {(lechKhaiBao * 100).toFixed(0)} % so với diện tích vẽ; hệ thống chỉ nhận lệch tối đa 10 % (mã lỗi UC006).</p>
+							<p class="canh-bao">Lệch {(lechKhaiBao * 100).toFixed(0)} % so với diện tích vẽ; hệ thống chỉ nhận lệch tối đa 10 % (mã lỗi UC004).</p>
 						{/if}
 						{#if loi}
 							<div role="alert" class="loi"><b>{loi.thongBao}</b>{#if loi.goiY}<br />{loi.goiY}{/if}</div>
