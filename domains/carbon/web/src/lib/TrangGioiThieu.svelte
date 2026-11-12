@@ -365,7 +365,7 @@
 					<p>
 						Cán bộ hoặc xã viên vẽ đa giác ranh giới lô rừng ngay trên ảnh Sentinel-2. Cơ sở dữ liệu tự động từ
 						chối nếu chồng lấn với lô khác (<code>UC005</code>) hoặc lệch quá 10 % so với diện tích trên giấy tờ
-						(<code>UC006</code>).
+						(<code>UC004</code>).
 					</p>
 				</li>
 				<li>

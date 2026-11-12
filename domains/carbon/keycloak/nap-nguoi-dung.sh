@@ -12,6 +12,10 @@ sed -e "s/__MK_CANBO__/$(cat /run/bimat/mk-canbo-htx-mau)/" \
     -e "s/__MK_CANBO2__/$(cat /run/bimat/mk-canbo-htx-mau-2)/" \
     -e "s/__MK_XV1__/$(cat /run/bimat/mk-xavien-mau-1)/" \
     -e "s/__MK_XV2__/$(cat /run/bimat/mk-xavien-mau-2)/" /nguoi-dung-mau.json > "$TAM"
+# Trang đăng nhập tiếng Việt cho người dùng cuối. realm-dxos.json đã đặt sẵn, nhưng --import-realm bỏ qua
+# realm đã có (bản demo cũ) nên đặt lại ở đây; chạy lại không sao. Chỉ để "vi": nếu thêm "en", Keycloak sẽ
+# theo ngôn ngữ trình duyệt (Accept-Language) và trình duyệt tiếng Anh lại thấy trang tiếng Anh.
+$KC update realms/dxos -s internationalizationEnabled=true -s 'supportedLocales=["vi"]' -s defaultLocale=vi
 $KC create partialImport -r dxos -f "$TAM" -o --fields added,skipped >/dev/null
 rm -f "$TAM"
 echo "carbon: đã nạp người dùng mẫu (bỏ qua nếu đã có)"
