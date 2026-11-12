@@ -297,7 +297,13 @@
 			banDo?.remove();
 		};
 	});
+	// Tiêu đề tab: trang chủ khi chưa đăng nhập; bàn làm việc đổi theo việc đang làm (vẽ lô mới, lô đang chọn)
+	const tieuDe = $derived(
+		!nd ? 'Trang chủ' : dangVe ? 'Đăng ký lô mới' : loChon ? `${loChon.ten} · Bàn làm việc` : 'Bàn làm việc'
+	);
 </script>
+
+<svelte:head><title>{tieuDe} · CarbonFarm OS</title></svelte:head>
 
 <svelte:window onkeydown={nd ? phimTat : undefined} />
 

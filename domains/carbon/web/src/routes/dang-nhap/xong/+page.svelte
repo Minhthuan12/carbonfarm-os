@@ -10,6 +10,8 @@
 		.catch((e: Error) => (loi = e.message));
 </script>
 
+<svelte:head><title>{loi ? 'Không thể đăng nhập' : 'Đang đăng nhập'} · CarbonFarm OS</title></svelte:head>
+
 <main>
 	<div class="hop">
 		<div class="logo-hop">
