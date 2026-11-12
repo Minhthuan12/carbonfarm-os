@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.7.0](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.6.0...v0.7.0) (2026-11-12)
+
+
+### Tính năng mới
+
+* **web:** tiêu đề tab riêng cho trang chủ, bàn làm việc và trang hoàn tất đăng nhập ([#92](https://github.com/carbonfarm-os/carbonfarm-os/issues/92)) ([#96](https://github.com/carbonfarm-os/carbonfarm-os/issues/96)) ([07df93c](https://github.com/carbonfarm-os/carbonfarm-os/commit/07df93c120cdc65c980d7ea62970b1e4dc6c1550))
+
+
+### Sửa lỗi
+
+* **web:** trang đăng nhập Keycloak tiếng Việt, form đăng ký lô ghi đúng mã lỗi UC004 ([#83](https://github.com/carbonfarm-os/carbonfarm-os/issues/83)) ([#84](https://github.com/carbonfarm-os/carbonfarm-os/issues/84)) ([ee178e3](https://github.com/carbonfarm-os/carbonfarm-os/commit/ee178e3a28310064c085dcdd39aafc21f8e1bd0a))
+
+
+### Tài liệu
+
+* **methodology:** giải thích con số 15,85 t CO₂e của Lô Đất Mũi 2 trên bản demo ([#91](https://github.com/carbonfarm-os/carbonfarm-os/issues/91)) ([#95](https://github.com/carbonfarm-os/carbonfarm-os/issues/95)) ([06237ad](https://github.com/carbonfarm-os/carbonfarm-os/commit/06237ad1eb823fdf20b924f302af78248dd2e389))
+* **readme:** bổ sung mục lục, tính năng theo vai, công nghệ, cấu trúc thư mục, thông tin đội ([#89](https://github.com/carbonfarm-os/carbonfarm-os/issues/89)) ([139738d](https://github.com/carbonfarm-os/carbonfarm-os/commit/139738d1dfd7565fa7c014528faa6e3c4139eb2c))
+* **readme:** cập nhật theo v0.6.0 và thêm ảnh demo ([#87](https://github.com/carbonfarm-os/carbonfarm-os/issues/87)) ([31df104](https://github.com/carbonfarm-os/carbonfarm-os/commit/31df104b57d767fb2210d2d474334bc0ae0f69e2))
+* **readme:** ghi bản mới nhất v0.7.0 ([#98](https://github.com/carbonfarm-os/carbonfarm-os/issues/98)) ([89d79d9](https://github.com/carbonfarm-os/carbonfarm-os/commit/89d79d94a30c7ed2ea107feb1db03d4629e8c80d))
+
+
+### Kiểm thử
+
+* **e2e:** Hurl kiểm trang đăng nhập tiếng Việt và cảnh báo UC004 ([#93](https://github.com/carbonfarm-os/carbonfarm-os/issues/93)) ([#97](https://github.com/carbonfarm-os/carbonfarm-os/issues/97)) ([4ee0717](https://github.com/carbonfarm-os/carbonfarm-os/commit/4ee07178c6879c5981db1550a887f4708858c8e8))
+* **mrv:** thêm ca kiểm biên cho uoc_luong và doc_tham_so ([#90](https://github.com/carbonfarm-os/carbonfarm-os/issues/90)) ([#94](https://github.com/carbonfarm-os/carbonfarm-os/issues/94)) ([ed6b0c3](https://github.com/carbonfarm-os/carbonfarm-os/commit/ed6b0c397848361d7f17aad13ed53f1deb5356db))
+
 ## [0.6.0](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.5.1...v0.6.0) (2026-11-12)
 
 
