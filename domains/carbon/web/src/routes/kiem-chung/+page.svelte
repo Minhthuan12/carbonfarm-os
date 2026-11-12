@@ -27,10 +27,20 @@
 		cap_tin_chi: 'Registry cấp tín chỉ',
 		ban_tin_chi: 'Bán, chuyển quyền sở hữu'
 	};
+	const BUOC_NHAN: Record<string, string> = {
+		ket_qua_mrv: 'Bước 01 · Ghi nhận sinh khối MRV',
+		cap_tin_chi: 'Bước 02 · Phát hành sê-ri Registry',
+		ban_tin_chi: 'Bước 03 · Giao dịch chuyển nhượng'
+	};
+
+	/** Mã tra thử lấy từ sổ cái thật (/kiem-chung/api/tong-quan); sổ cái trống thì không có chip nào. */
+	let mauTraNhanh = $state<{ nhan: string; ma: string }[]>([]);
 
 	let q = $state('');
 	let kq = $state<KetQua | null>(null);
 	let loi = $state('');
+	/** 404: sổ cái không có mã này (khác với lỗi mạng hoặc máy chủ). */
+	let khongThay = $state('');
 	let dangTra = $state(false);
 
 	async function tra(e?: SubmitEvent) {
@@ -39,24 +49,48 @@
 		if (!v) return;
 		const laSeri = v.includes('-');
 		loi = '';
+		khongThay = '';
 		kq = null;
 		dangTra = true;
 		history.replaceState(null, '', `?q=${encodeURIComponent(v)}`);
 		try {
 			const res = await fetch(`/kiem-chung/api/${laSeri ? 'seri' : 'commit'}/${encodeURIComponent(v)}`);
-			const j = await res.json().catch(() => ({ loi: `Máy chủ trả mã ${res.status}` }));
-			if (!res.ok) throw new Error(j.loi ?? `Máy chủ trả mã ${res.status}`);
-			kq = { kieu: laSeri ? 'seri' : 'commit', ...j };
-		} catch (err) {
-			loi = (err as Error).message;
+			const laJson = (res.headers.get('content-type') ?? '').includes('application/json');
+			const j = laJson ? await res.json().catch(() => null) : null;
+			if (res.status === 404) {
+				khongThay = j?.loi ?? `Sổ cái không có ${laSeri ? 'tín chỉ' : 'commit'} ${v}`;
+			} else if (res.status >= 400 && res.status < 500) {
+				loi = j?.loi ?? `Mã tra cứu không hợp lệ (mã ${res.status})`;
+			} else if (!res.ok || !j) {
+				loi = `Không đọc được sổ cái lúc này (máy chủ trả mã ${res.status}). Hãy thử lại sau.`;
+			} else {
+				kq = { kieu: laSeri ? 'seri' : 'commit', ...j };
+			}
+		} catch {
+			loi = 'Không kết nối được máy chủ kiểm chứng. Kiểm tra mạng rồi thử lại.';
 		} finally {
 			dangTra = false;
 		}
 	}
 
+	function chonMau(ma: string) {
+		q = ma;
+		tra();
+	}
+
 	onMount(() => {
 		q = new URLSearchParams(location.search).get('q') ?? '';
 		if (q) tra();
+		fetch('/kiem-chung/api/tong-quan')
+			.then((r) => (r.ok ? r.json() : null))
+			.then((d) => {
+				if (!d) return;
+				const ds: { nhan: string; ma: string }[] = [];
+				if (d.seri_moi_nhat) ds.push({ nhan: 'Sê-ri cấp gần nhất', ma: d.seri_moi_nhat });
+				if (d.ket_qua_moi_nhat?.commit) ds.push({ nhan: 'Commit MRV gần nhất', ma: d.ket_qua_moi_nhat.commit });
+				mauTraNhanh = ds;
+			})
+			.catch(() => {});
 	});
 
 	const tom = (b: BanGhi) => {
@@ -67,254 +101,497 @@
 		return b.ma_doi_tuong;
 	};
 	const dsBanGhi = $derived(kq ? (kq.kieu === 'seri' ? kq.su_kien : kq.ban_ghi) : []);
+	/** Kết luận toàn vẹn chỉ dựa trên phản hồi của API: sê-ri dùng toan_ven, commit dùng từng bản ghi. */
+	const toanVen = $derived(
+		kq ? (kq.kieu === 'seri' ? kq.toan_ven : kq.ban_ghi.every((b) => b.sha256_khop && b.con_nguyen_ven)) : false
+	);
 </script>
 
 <svelte:head><title>Kiểm chứng tín chỉ · CarbonFarm OS</title></svelte:head>
 
 <div class="trang">
-<section class="mo" aria-labelledby="td">
 	<header class="dau">
-		<a class="ten" href="/">CarbonFarm OS</a>
+		<a class="ten" href="/">
+			<img class="logo-anh" src="/nen/logo-transparent.png" alt="Logo CarbonFarm OS" width="36" height="36" />
+			<span>CarbonFarm OS</span>
+		</a>
 		<nav aria-label="Trang chủ">
+			<a href="/">← Về trang chủ / Bàn làm việc</a>
 			<a href="/#cach-lam">Cách làm</a>
 			<a href="/#phuong-phap">Phương pháp</a>
 		</nav>
 	</header>
-	<div class="mo-giua">
-		<div>
+
+	<section class="mo" aria-labelledby="td">
+		<div class="mo-trai">
+			<div class="huy-hieu-chinh">
+				<img class="logo-mini" src="/nen/logo-transparent.png" alt="" width="20" height="20" />
+				<span>Cổng Kiểm Chứng Sổ Cái Công Khai</span>
+				<span class="cham-xanh"></span>
+			</div>
 			<h1 id="td">Tra một tín chỉ trên sổ cái</h1>
 			<p class="dan">
-				Hệ thống tính lại SHA-256 của từng bản ghi và cho biết bản ghi còn nguyên vẹn hay không. Không cần tài khoản.
+				Hệ thống đọc trực tiếp bản ghi bất biến trong sổ cái Dolt, tính lại mã băm <code>SHA-256</code> của từng sự kiện
+				và đối chiếu chữ ký toàn vẹn. Không cần tài khoản.
 			</p>
+			{#if mauTraNhanh.length}
+			<div class="mau-nhanh">
+				<span>Tra thử trên sổ cái:</span>
+				{#each mauTraNhanh as m (m.ma)}
+					<button type="button" class="chip-mau" class:chon={q === m.ma} onclick={() => chonMau(m.ma)}>
+						{m.nhan} (<code>{m.ma.slice(0, 15)}{m.ma.length > 15 ? '…' : ''}</code>)
+					</button>
+				{/each}
+			</div>
+			{/if}
 		</div>
-		<form onsubmit={tra}>
+
+		<form class="form-tra" onsubmit={tra}>
 			<label class="o-nhap">
-				Số sê-ri hoặc mã băm commit
+				Số sê-ri tín chỉ hoặc mã băm commit Dolt
 				<input bind:value={q} placeholder="MCK-DM01-26-0000000001" autocomplete="off" spellcheck="false" />
 			</label>
-			<button class="nut rong" type="submit" disabled={dangTra}>{dangTra ? 'Đang tra…' : 'Kiểm chứng'}</button>
+			<button class="nut rong" type="submit" disabled={dangTra}>{dangTra ? 'Đang đối chiếu sổ cái…' : 'Kiểm chứng toàn vẹn'}</button>
 			{#if loi}<p role="alert" class="loi">{loi}</p>{/if}
 		</form>
-	</div>
-</section>
+	</section>
 
-<main>
-	{#if kq}
-		<section class="ket-luan" class:hong={kq.kieu === 'seri' && !kq.toan_ven} aria-labelledby="kl">
-			{#if kq.kieu === 'seri'}
-				<h2 id="kl">{kq.toan_ven ? 'Toàn vẹn.' : 'Có bản ghi không khớp.'}</h2>
-				<p>
-					Tín chỉ <code>{kq.so_seri}</code> thuộc <b>{kq.chu_so_huu_theo_so_cai.ten}</b> (mã số thuế
-					{kq.chu_so_huu_theo_so_cai.ma_so_thue}), qua {kq.su_kien.length} bản ghi trên sổ cái.
-				</p>
-			{:else}
-				<h2 id="kl">Một commit trên sổ cái.</h2>
-				<p><code>{kq.commit}</code> · {kq.luc}<br />{kq.thong_diep}</p>
-			{/if}
-		</section>
+	<main>
+		{#if khongThay}
+			<section class="ket-luan khong-thay" role="status" aria-labelledby="kt">
+				<div class="ket-luan-dau">
+					<span class="huy-hieu">Không tìm thấy trên sổ cái</span>
+				</div>
+				<h2 id="kt">Không có bản ghi.</h2>
+				<p>{khongThay}. Kiểm tra lại số sê-ri hoặc mã băm; tín chỉ chưa được cấp sẽ không có trên sổ cái.</p>
+			</section>
+		{:else if kq}
+			<section class="ket-luan" class:hong={!toanVen} aria-labelledby="kl">
+				<div class="ket-luan-dau">
+					<span class="huy-hieu">
+						{#if !toanVen}
+							Cảnh báo sai lệch
+						{:else}
+							Chứng thư sổ cái hợp lệ · Dolt + SHA-256
+						{/if}
+					</span>
+					{#if kq.kieu === 'seri'}
+						<span class="nhan {kq.toan_ven ? 'tot' : 'xau'}">
+							{kq.toan_ven ? `${kq.su_kien.length}/${kq.su_kien.length} bản ghi khớp SHA-256` : 'Phát hiện bản ghi không khớp'}
+						</span>
+					{/if}
+				</div>
 
-		<section class="chuoi" aria-labelledby="chuoi-td">
-			<h2 id="chuoi-td">Các bản ghi</h2>
-			<ol>
-				{#each dsBanGhi as b (b.commit + b.ma_doi_tuong)}
-					<li>
-						<div class="dong-dau">
-							<h3>{LOAI[b.loai] ?? b.loai}</h3>
-							<span class="nhan" class:tot={b.sha256_khop && b.con_nguyen_ven} class:xau={!b.sha256_khop || !b.con_nguyen_ven}>
-								{b.sha256_khop && b.con_nguyen_ven ? 'SHA-256 khớp' : b.sha256_khop ? 'Đã bị sửa sau' : 'SHA-256 không khớp'}
-							</span>
-						</div>
-						<p class="tom">{tom(b)}</p>
-						<p class="phu">
-							Commit <a href="?q={b.commit}" onclick={(e) => { e.preventDefault(); q = b.commit; tra(); }}><code>{b.commit}</code></a> · {b.luc}
-						</p>
-						<details>
-							<summary>Bản ghi gốc (định danh người dùng đã ẩn)</summary>
-							<p class="phu">SHA-256 sổ cái <code>{b.sha256_so_cai}</code><br />SHA-256 tính lại <code>{b.sha256_tinh_lai}</code></p>
-							<pre><code>{JSON.stringify(b.du_lieu, null, 2)}</code></pre>
-						</details>
-					</li>
-				{/each}
-			</ol>
-		</section>
-	{/if}
-</main>
+				{#if kq.kieu === 'seri'}
+					<h2 id="kl">{kq.toan_ven ? 'Toàn vẹn.' : 'Có bản ghi không khớp.'}</h2>
+					<p>
+						Tín chỉ <code>{kq.so_seri}</code> hiện thuộc quyền sở hữu của <b>{kq.chu_so_huu_theo_so_cai.ten}</b> (mã số thuế
+						<code>{kq.chu_so_huu_theo_so_cai.ma_so_thue}</code>), được truy nguyên qua <b>{kq.su_kien.length}</b> bản ghi nối tiếp trên sổ cái.
+					</p>
+				{:else}
+					<h2 id="kl">Một commit trên sổ cái.</h2>
+					<p>Commit <code>{kq.commit}</code> · ghi lúc <b>{kq.luc}</b><br />{kq.thong_diep}</p>
+				{/if}
+			</section>
+
+			<section class="chuoi" aria-labelledby="chuoi-td">
+				<div class="chuoi-dau">
+					<h2 id="chuoi-td">Các bản ghi trong chuỗi phả hệ ({dsBanGhi.length})</h2>
+					<p>Mỗi bản ghi được băm lại từ JSON gốc (đã ẩn định danh cá nhân theo quy định bảo mật).</p>
+				</div>
+
+				<ol>
+					{#each dsBanGhi as b (b.commit + b.ma_doi_tuong)}
+						<li>
+							<div class="moc-thoi-gian" aria-hidden="true"></div>
+							<div class="noi-dung-buoc">
+								<div class="dong-dau">
+									<div>
+										<span class="buoc-nhan">{BUOC_NHAN[b.loai] ?? 'Sự kiện sổ cái'}</span>
+										<h3>{LOAI[b.loai] ?? b.loai}</h3>
+									</div>
+									<span class="nhan" class:tot={b.sha256_khop && b.con_nguyen_ven} class:xau={!b.sha256_khop || !b.con_nguyen_ven}>
+										{b.sha256_khop && b.con_nguyen_ven ? 'SHA-256 khớp · Nguyên vẹn' : b.sha256_khop ? 'Đã bị sửa sau' : 'SHA-256 không khớp'}
+									</span>
+								</div>
+
+								<p class="tom">{tom(b)}</p>
+
+								<div class="thong-tin-bam">
+									<div>
+										<span>Commit Dolt</span>
+										<a href="?q={b.commit}" onclick={(e) => { e.preventDefault(); q = b.commit; tra(); }}><code>{b.commit}</code></a>
+									</div>
+									<div>
+										<span>Thời điểm ghi sổ</span>
+										<strong>{b.luc}</strong>
+									</div>
+								</div>
+
+								<details>
+									<summary>Bản ghi gốc & đối chiếu mã băm SHA-256 (định danh người dùng đã ẩn)</summary>
+									<div class="bang-sha">
+										<div>
+											<span>SHA-256 lưu trong sổ cái</span>
+											<code>{b.sha256_so_cai}</code>
+										</div>
+										<div>
+											<span>SHA-256 tính lại trực tiếp</span>
+											<code>{b.sha256_tinh_lai}</code>
+										</div>
+									</div>
+									<pre><code>{JSON.stringify(b.du_lieu, null, 2)}</code></pre>
+								</details>
+							</div>
+						</li>
+					{/each}
+				</ol>
+			</section>
+		{/if}
+	</main>
 </div>
 
 <style>
 	.trang {
-		padding: 12px;
-	}
-	.mo {
-		padding: 0 var(--le) clamp(48px, 6vw, 80px);
-		border-radius: 24px 24px 64px 64px;
-		background: var(--teal);
-		color: #e4efec;
+		max-width: 1240px;
+		margin: 0 auto;
+		padding: 0 var(--le) 96px;
 	}
 	.dau {
 		display: flex;
+		justify-content: space-between;
 		align-items: center;
 		gap: 24px;
-		max-width: 1120px;
-		min-height: 80px;
-		margin: 0 auto;
+		min-height: 76px;
+		border-bottom: 1px solid var(--ke);
 	}
 	.ten {
-		color: #fff;
-		font: 600 1.375rem var(--serif);
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		color: var(--muc);
+		font: 700 1.25rem var(--serif);
 		letter-spacing: -0.02em;
 		text-decoration: none;
 	}
+	.logo-anh {
+		display: block;
+		width: 36px;
+		height: 36px;
+		object-fit: contain;
+		filter: drop-shadow(0 2px 6px rgb(11 93 76 / 0.18));
+	}
 	.dau nav {
 		display: flex;
-		gap: 28px;
-		margin-left: auto;
+		align-items: center;
+		gap: 24px;
 	}
 	.dau nav a {
-		color: #d3e4e0;
+		color: var(--mo);
 		font-size: 0.9375rem;
+		font-weight: 500;
 		text-decoration: none;
 	}
 	.dau nav a:hover {
-		color: #fff;
+		color: var(--teal);
 	}
-	.mo-giua {
+
+	/* Khối tra cứu phẳng, không lồng thẻ trong thẻ */
+	.mo {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
-		gap: clamp(32px, 5vw, 72px);
+		grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+		gap: clamp(28px, 4vw, 56px);
 		align-items: center;
-		max-width: 1120px;
-		margin: clamp(16px, 4vw, 48px) auto 0;
+		padding: clamp(28px, 4vw, 48px) 0;
+		border-bottom: 1px solid var(--ke);
 	}
 	h1 {
-		color: #fff;
-		font-size: clamp(2.25rem, 4.6vw, 3.75rem);
-		line-height: 1.06;
+		color: var(--muc);
+		font-size: clamp(2rem, 3.8vw, 3.125rem);
+		line-height: 1.08;
+	}
+	.huy-hieu-chinh {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		margin-bottom: 14px;
+		padding: 5px 14px;
+		border: 1px solid var(--teal-vien);
+		border-radius: 999px;
+		background: var(--teal-nhat);
+		color: var(--teal-dam);
+		font-size: 0.8125rem;
+		font-weight: 600;
+	}
+	.logo-mini {
+		display: block;
+		width: 18px;
+		height: 18px;
+		object-fit: contain;
 	}
 	.dan {
-		max-width: 44ch;
-		margin-top: 20px;
-		font-size: 1.125rem;
+		max-width: 54ch;
+		margin-top: 14px;
+		color: var(--mo);
+		font-size: 1.0625rem;
+		line-height: 1.6;
 	}
-	form {
+	.mau-nhanh {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		margin-top: 20px;
+	}
+	.mau-nhanh > span {
+		color: var(--mo);
+		font-size: 0.8125rem;
+		font-weight: 600;
+	}
+	.chip-mau {
+		padding: 6px 12px;
+		border: 1px solid var(--ke-dam);
+		border-radius: 999px;
+		background: #fff;
+		color: var(--muc);
+		font: 500 0.8125rem var(--sans);
+		cursor: pointer;
+		transition: border-color 0.15s var(--de), background-color 0.15s var(--de);
+	}
+	.chip-mau:hover,
+	.chip-mau.chon {
+		border-color: var(--teal);
+		background: var(--teal-nhat);
+		color: var(--teal-dam);
+	}
+	.form-tra {
 		display: grid;
 		gap: 14px;
-		padding: 28px;
-		border-radius: 28px;
+		padding: 24px;
+		border: 1px solid var(--ke);
+		border-radius: 22px;
 		background: #fff;
+		box-shadow: var(--bong);
 	}
+
 	main {
-		max-width: 1120px;
-		margin: 0 auto;
-		padding: clamp(40px, 6vw, 80px) var(--le) 120px;
+		margin-top: 32px;
 	}
 	code {
 		font-size: 0.85em;
 		overflow-wrap: anywhere;
 	}
+
+	/* Thẻ chứng thư kết luận sáng trang nhã thay cho khối đen đặc */
 	.ket-luan {
 		display: grid;
-		gap: 14px;
-		padding: clamp(28px, 4vw, 48px);
-		border-radius: 32px;
-		background: var(--dao);
-		color: #d6d5cf;
+		gap: 12px;
+		padding: clamp(24px, 3.5vw, 36px);
+		border: 1.5px solid #99d5be;
+		border-radius: 26px;
+		background: linear-gradient(180deg, #f2fbf7 0%, #e4f4ec 100%);
+		color: var(--muc);
+		box-shadow: var(--bong);
 	}
 	.ket-luan.hong {
-		background: #5e1810;
+		border-color: #f3c4bd;
+		background: var(--xau-nhat);
+	}
+	.ket-luan.khong-thay {
+		border-color: var(--ke);
+		background: #ffffff;
+	}
+	.ket-luan.khong-thay h2,
+	.ket-luan.khong-thay .huy-hieu {
+		color: var(--muc);
+	}
+	.ket-luan-dau {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.huy-hieu {
+		color: var(--teal-dam);
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
 	}
 	.ket-luan h2 {
-		color: #fff;
-		font-size: clamp(2rem, 3.6vw, 3rem);
+		color: var(--teal-dam);
+		font-size: clamp(1.75rem, 3vw, 2.5rem);
+	}
+	.ket-luan.hong h2,
+	.ket-luan.hong .huy-hieu {
+		color: var(--xau);
 	}
 	.ket-luan p {
-		max-width: 60ch;
-		font-size: 1.125rem;
-	}
-	.ket-luan b {
-		color: #fff;
+		max-width: 68ch;
+		color: var(--muc);
+		font-size: 1.0625rem;
+		line-height: 1.6;
 	}
 	.ket-luan code {
-		color: var(--amber);
+		color: var(--teal-dam);
+		font-weight: 700;
 	}
+
+	/* Chuỗi sự kiện sổ cái */
 	.chuoi {
-		padding-top: clamp(48px, 6vw, 80px);
+		margin-top: 40px;
 	}
-	.chuoi > h2 {
+	.chuoi-dau {
 		margin-bottom: 20px;
-		font-size: 1.75rem;
+	}
+	.chuoi-dau h2 {
+		font-size: 1.5rem;
+	}
+	.chuoi-dau p {
+		margin-top: 4px;
+		color: var(--mo);
+		font-size: 0.9375rem;
 	}
 	ol {
 		display: grid;
-		gap: 12px;
+		gap: 16px;
 		margin: 0;
 		padding: 0;
 		list-style: none;
 	}
 	li {
+		position: relative;
 		display: grid;
-		gap: 10px;
-		min-width: 0;
-		padding: clamp(20px, 2.4vw, 32px);
-		border-radius: 24px;
+		grid-template-columns: 24px minmax(0, 1fr);
+		gap: 16px;
+	}
+	.moc-thoi-gian {
+		position: relative;
+		display: flex;
+		justify-content: center;
+	}
+	.moc-thoi-gian::before {
+		content: '';
+		width: 14px;
+		height: 14px;
+		margin-top: 26px;
+		border: 3px solid var(--teal);
+		border-radius: 50%;
 		background: #fff;
+		z-index: 1;
+	}
+	li:not(:last-child) .moc-thoi-gian::after {
+		content: '';
+		position: absolute;
+		top: 40px;
+		bottom: -24px;
+		width: 2px;
+		background: var(--ke-dam);
+	}
+	.noi-dung-buoc {
+		display: grid;
+		gap: 12px;
+		min-width: 0;
+		padding: 24px;
+		border: 1px solid var(--ke);
+		border-radius: 22px;
+		background: #fff;
+		box-shadow: var(--bong);
 	}
 	.dong-dau {
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
-		gap: 16px;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+	.buoc-nhan {
+		display: block;
+		color: var(--teal);
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
 	}
 	h3 {
-		font-size: 1.375rem;
+		margin-top: 2px;
+		font-size: 1.25rem;
 	}
 	.tom {
 		color: var(--muc);
+		font-size: 1rem;
+		font-weight: 500;
 	}
-	.phu {
+	.thong-tin-bam {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px 32px;
+		padding: 12px 0;
+		border-top: 1px solid var(--ke);
+		border-bottom: 1px solid var(--ke);
+		font-size: 0.8125rem;
+	}
+	.thong-tin-bam > div {
+		display: grid;
+		gap: 2px;
+	}
+	.thong-tin-bam span {
 		color: var(--mo);
-		font-size: 0.875rem;
+		font-size: 0.75rem;
 	}
-	.phu a {
+	.thong-tin-bam a {
 		color: var(--teal);
+		font-weight: 600;
 	}
 	summary {
-		color: var(--muc);
-		font-size: 0.9375rem;
-		font-weight: 500;
+		color: var(--teal-dam);
+		font-size: 0.875rem;
+		font-weight: 600;
 		cursor: pointer;
+	}
+	.bang-sha {
+		display: grid;
+		gap: 8px;
+		margin-top: 10px;
+		padding: 10px 0;
+		border-bottom: 1px solid var(--ke);
+		font-size: 0.8125rem;
+	}
+	.bang-sha > div {
+		display: grid;
+		gap: 2px;
+	}
+	.bang-sha span {
+		color: var(--mo);
+		font-size: 0.75rem;
+	}
+	.bang-sha code {
+		color: var(--teal-dam);
+		font-weight: 600;
 	}
 	pre {
 		max-height: 20rem;
 		overflow: auto;
-		margin: 12px 0 0;
-		padding: 16px;
-		border-radius: 14px;
-		background: var(--giay);
+		margin: 10px 0 0;
+		padding: 12px 0 0;
 		font-size: 0.8125rem;
 	}
+
 	@media (max-width: 860px) {
-		.mo-giua {
+		.mo {
 			grid-template-columns: 1fr;
 		}
 	}
 	@media (max-width: 640px) {
-		.trang {
-			padding: 8px;
-		}
-		.mo {
-			border-radius: 20px 20px 40px 40px;
-		}
 		.dau nav {
 			display: none;
 		}
-		form {
-			padding: 22px;
+		li {
+			grid-template-columns: 1fr;
 		}
-		.dong-dau {
-			flex-direction: column;
-			align-items: start;
-			gap: 8px;
+		.moc-thoi-gian {
+			display: none;
 		}
 	}
 </style>
