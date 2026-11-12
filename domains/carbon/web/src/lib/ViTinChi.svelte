@@ -50,6 +50,11 @@
 	const tong = $derived(vi.reduce((t, k) => t + k.soLuong, 0));
 	const maTin = $derived(vi[0]?.maTrongNuoc ?? '');
 	const vnd = (v: string | number) => `${Number(v).toLocaleString('vi-VN')} đ`;
+	const tamTinhVnd = $derived.by(() => {
+		const sl = Number(form.soLuong);
+		const gia = Number(form.donGia.replace(/\D/g, ''));
+		return sl > 0 && gia > 0 ? sl * gia : null;
+	});
 
 	async function tai() {
 		clearTimeout(hen);
@@ -62,7 +67,6 @@
 			const dangGiaoDich = lenh.some((l) => l.trangThai === 'da_duyet');
 			lenh = d.allCarbonLenhBans.nodes.sort((a, b) => b.taoLuc.localeCompare(a.taoLuc));
 			if (!form.maNguoiMua && nguoiMua.length) form.maNguoiMua = nguoiMua[0].ma;
-			// Giao dịch vừa xong → ví đổi
 			if (dangGiaoDich && !lenh.some((l) => l.trangThai === 'da_duyet')) onThayDoi();
 		} catch (e) {
 			loi = { thongBao: (e as Error).message };
@@ -76,6 +80,7 @@
 		try {
 			await goiGraphql(token, mutation, bien);
 			await tai();
+			onThayDoi();
 			return true;
 		} catch (e) {
 			loi = e instanceof LoiNghiepVu ? { thongBao: e.message, goiY: e.goiY } : { thongBao: (e as Error).message };
@@ -115,31 +120,53 @@
 </script>
 
 <section class="vi" aria-labelledby="vi-td">
-	<h2 id="vi-td">Ví tín chỉ</h2>
-	<p class="tong">{tong} <span>tín chỉ, mỗi tín chỉ là 1 t CO₂e</span></p>
+	<div class="dau-muc">
+		<h2 id="vi-td">Ví tín chỉ</h2>
+		<span class="nhan tot">1 tín chỉ = 1 t CO₂e</span>
+	</div>
+
 	{#if vi.length}
 		<ul class="khoi">
 			{#each vi as k (k.rowId)}
-				<li><span class="sl">{k.soLuong}</span> <a href="/kiem-chung?q={k.seriTu}"><code>{k.seriTu}</code></a> đến <code>{k.seriDen.slice(-10)}</code></li>
+				<li>
+					<div class="khoi-trai">
+						<span class="sl">{k.soLuong}</span>
+						<div>
+							<strong>Dải sê-ri đang nắm giữ</strong>
+							<p>
+								<a href="/kiem-chung?q={k.seriTu}"><code>{k.seriTu}</code></a> →
+								<code>{k.seriDen.slice(-10)}</code>
+							</p>
+						</div>
+					</div>
+				</li>
 			{/each}
 		</ul>
+	{:else}
+		<p class="phu">Ví hiện chưa có tín chỉ khả dụng.</p>
 	{/if}
 
 	{#if laCanBo && tong > 0}
 		<form onsubmit={taoLenh}>
-			<h3>Bán tín chỉ</h3>
+			<div class="dau-form">
+				<h3>Bán tín chỉ</h3>
+				<span>TT 11/2026 · Duyệt 2 cán bộ</span>
+			</div>
 			<label class="o-nhap">
-				Người mua
+				Người mua đã đăng ký
 				<select bind:value={form.maNguoiMua} required>
-					{#each nguoiMua as n (n.ma)}<option value={n.ma}>{n.ten}, tối đa {vnd(n.donGiaToiDaVnd)}</option>{/each}
+					{#each nguoiMua as n (n.ma)}<option value={n.ma}>{n.ten} (trần {vnd(n.donGiaToiDaVnd)})</option>{/each}
 				</select>
 			</label>
 			<div class="hang">
-				<label class="o-nhap">Số tín chỉ <input bind:value={form.soLuong} inputmode="numeric" required /></label>
-				<label class="o-nhap">Đơn giá (đ) <input bind:value={form.donGia} inputmode="numeric" required placeholder="200000" /></label>
+				<label class="o-nhap">Số tín chỉ <input bind:value={form.soLuong} inputmode="numeric" required placeholder="Ví dụ: 3" /></label>
+				<label class="o-nhap">Đơn giá (đ) <input bind:value={form.donGia} inputmode="numeric" required placeholder="210000" /></label>
 			</div>
+			{#if tamTinhVnd}
+				<p class="tam-tinh">Tạm tính thành tiền: <b>{vnd(tamTinhVnd)}</b></p>
+			{/if}
 			<button class="nut rong" type="submit" disabled={dangGui}>Tạo lệnh bán</button>
-			<p class="phu">Lệnh cần một cán bộ khác duyệt, theo Thông tư 11/2026/TT-BNNMT, Điều 6 khoản 3.</p>
+			<p class="phu">Lệnh bán cần một cán bộ HTX thứ hai duyệt chéo trước khi chuyển quyền sở hữu trên sổ cái.</p>
 		</form>
 	{/if}
 </section>
@@ -150,24 +177,45 @@
 
 {#if lenh.length}
 	<section class="ds-lenh" aria-labelledby="lenh-td">
-		<h2 id="lenh-td">Lệnh bán</h2>
+		<div class="dau-muc">
+			<h2 id="lenh-td">Lệnh bán ({lenh.length})</h2>
+		</div>
 		{#each lenh as l (l.rowId)}
 			<article class="lenh" data-trang-thai={l.trangThai}>
 				<header>
-					<span>{l.soLuong} tín chỉ cho {nguoiMua.find((n) => n.ma === l.maNguoiMua)?.ten ?? l.maNguoiMua}</span>
-					<span class="nhan {({ cho_duyet: 'cho', hoan_tat: 'tot', tu_choi: 'xau', loi: 'xau' } as Record<string, string>)[l.trangThai] ?? ''}">{TRANG_THAI[l.trangThai] ?? l.trangThai}</span>
+					<strong>{l.soLuong} tín chỉ → {nguoiMua.find((n) => n.ma === l.maNguoiMua)?.ten ?? l.maNguoiMua}</strong>
+					<span class="nhan {({ cho_duyet: 'cho', hoan_tat: 'tot', tu_choi: 'xau', loi: 'xau' } as Record<string, string>)[l.trangThai] ?? ''}">
+						{TRANG_THAI[l.trangThai] ?? l.trangThai}
+					</span>
 				</header>
-				<p class="phu">{vnd(l.donGiaVnd)} mỗi tín chỉ · tổng {vnd(l.thanhTienVnd)}{#if l.doToiTao} · bạn tạo{/if}</p>
+				<p class="gia-lenh">
+					<span>Đơn giá <b>{vnd(l.donGiaVnd)}</b></span>
+					<span>·</span>
+					<span>Tổng <b>{vnd(l.thanhTienVnd)}</b></span>
+					{#if l.doToiTao}
+						<span class="chip-nguoi">Bạn tạo</span>
+					{:else if l.trangThai === 'cho_duyet'}
+						<span class="chip-duyet">Cán bộ khác tạo — bạn có thể duyệt</span>
+					{/if}
+				</p>
 				{#if l.lyDoLoi}<p class="loi">{l.lyDoLoi}</p>{/if}
 				{#if l.ghiChuDuyet}<p class="phu">Ghi chú duyệt: {l.ghiChuDuyet}</p>{/if}
-				{#if l.doltCommit}<p class="phu">Sổ cái <a href="/kiem-chung?q={l.doltCommit}"><code>{l.doltCommit.slice(0, 12)}…</code></a></p>{/if}
+				{#if l.doltCommit}
+					<p class="phu">
+						Cam kết sổ cái: <a href="/kiem-chung?q={l.doltCommit}"><code>{l.doltCommit.slice(0, 12)}…</code></a>
+					</p>
+				{/if}
 				{#if laCanBo && l.trangThai === 'cho_duyet' && !l.doToiTao}
-					<label class="o-nhap">
-						Ghi chú, bắt buộc khi từ chối
-						<textarea bind:value={lyDo[l.rowId]} rows="2"></textarea>
-					</label>
-					<button type="button" class="nut rong" disabled={dangGui} onclick={() => duyet(l.rowId, true)}>Duyệt bán</button>
-					<button type="button" class="chu xau" disabled={dangGui} onclick={() => duyet(l.rowId, false)}>Từ chối</button>
+					<div class="khung-duyet-lenh">
+						<label class="o-nhap">
+							Ghi chú duyệt (bắt buộc khi từ chối)
+							<textarea bind:value={lyDo[l.rowId]} rows="2" placeholder="Đã kiểm tra hợp đồng mua bán tín chỉ…"></textarea>
+						</label>
+						<div class="hang-duyet">
+							<button type="button" class="nut rong" disabled={dangGui} onclick={() => duyet(l.rowId, true)}>Duyệt bán</button>
+							<button type="button" class="nut-tu-choi" disabled={dangGui} onclick={() => duyet(l.rowId, false)}>Từ chối</button>
+						</div>
+					</div>
 				{/if}
 			</article>
 		{/each}
@@ -179,50 +227,66 @@
 	.ds-lenh {
 		display: flex;
 		flex-direction: column;
-		gap: 14px;
-		padding-top: 20px;
+		gap: 10px;
+		padding-top: 10px;
 		border-top: 1px solid var(--ke);
 	}
+	.dau-muc {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 8px;
+	}
 	h2 {
-		font-size: 1.25rem;
+		font: 700 1.0625rem var(--sans);
 	}
 	h3 {
-		font-size: 1.125rem;
-	}
-	.tong {
-		color: var(--muc);
-		font: 600 3.25rem/1 var(--serif);
-		letter-spacing: -0.03em;
-	}
-	.tong span {
-		color: var(--mo);
-		font: 400 0.9375rem var(--sans);
-		letter-spacing: 0;
+		font: 700 0.9375rem var(--sans);
 	}
 	.khoi {
 		display: grid;
+		gap: 8px;
 		margin: 0;
 		padding: 0;
 		list-style: none;
 		overflow-wrap: anywhere;
 	}
 	.khoi li {
-		padding: 10px 0;
-		border-bottom: 1px solid var(--ke);
+		padding: 12px 14px;
+		border: 1px solid var(--teal-vien);
+		border-radius: 14px;
+		background: var(--teal-nhat);
+		box-shadow: 0 1px 3px rgba(11, 99, 81, 0.06);
+	}
+	.khoi-trai {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	.khoi-trai strong {
+		display: block;
+		color: var(--teal-dam);
+		font-size: 0.75rem;
+	}
+	.khoi-trai p {
+		margin-top: 2px;
+		font-size: 0.8125rem;
 	}
 	.khoi a {
-		color: var(--teal);
+		color: var(--teal-dam);
+		font-weight: 600;
 	}
 	.sl {
 		display: inline-grid;
 		place-items: center;
-		min-width: 36px;
-		height: 28px;
-		margin-right: 6px;
-		border-radius: 999px;
-		background: var(--teal-nhat);
-		color: var(--teal);
-		font-weight: 600;
+		min-width: 42px;
+		height: 36px;
+		padding: 0 10px;
+		border-radius: 10px;
+		background: var(--teal);
+		color: #fff;
+		font: 700 1rem var(--sans);
+		font-variant-numeric: tabular-nums;
 	}
 	code {
 		font-size: 0.85em;
@@ -231,50 +295,112 @@
 		display: grid;
 		gap: 12px;
 		padding: 18px;
-		border-radius: 18px;
-		background: var(--giay);
+		border: 1px solid var(--ke);
+		border-radius: 16px;
+		background: var(--nen-mem);
+	}
+	.dau-form {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 8px;
+	}
+	.dau-form span {
+		color: var(--mo);
+		font-size: 0.75rem;
+		font-weight: 500;
 	}
 	.hang {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 12px;
+		gap: 10px;
+	}
+	.tam-tinh {
+		padding: 10px 14px;
+		border: 1px solid var(--tot-vien);
+		border-radius: 10px;
+		background: var(--tot-nen);
+		color: var(--tot);
+		font-size: 0.875rem;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
 	}
 	.phu {
 		color: var(--mo);
-		font-size: 0.875rem;
+		font-size: 0.8125rem;
+		line-height: 1.45;
 	}
 	.phu a {
 		color: var(--teal);
 	}
 	.lenh {
 		display: grid;
-		gap: 10px;
-		padding: 16px 0;
+		gap: 8px;
+		padding: 14px 0;
+		border-bottom: 1px solid var(--ke);
 	}
-	.lenh + .lenh {
-		border-top: 1px solid var(--ke);
+	.lenh:last-child {
+		padding-bottom: 0;
+		border-bottom: 0;
 	}
 	.lenh header {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
-		gap: 8px 12px;
+		gap: 8px;
 		color: var(--muc);
-		font-weight: 500;
 	}
-	.chu {
-		justify-self: center;
-		min-height: 32px;
-		padding: 0;
-		border: 0;
-		background: none;
-		font: 500 0.9375rem var(--sans);
-		text-decoration: underline;
-		text-underline-offset: 0.25em;
-		cursor: pointer;
+	.lenh header strong {
+		font-size: 0.875rem;
 	}
-	.chu.xau {
+	.gia-lenh {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 6px;
+		color: var(--mo);
+		font-size: 0.8125rem;
+		font-variant-numeric: tabular-nums;
+	}
+	.gia-lenh b {
+		color: var(--muc);
+	}
+	.chip-nguoi,
+	.chip-duyet {
+		padding: 2px 8px;
+		border-radius: 999px;
+		font-size: 0.6875rem;
+		font-weight: 600;
+	}
+	.chip-nguoi {
+		background: var(--giay-2);
+		color: var(--mo);
+	}
+	.chip-duyet {
+		background: var(--teal-nhat);
+		color: var(--teal-dam);
+	}
+	.khung-duyet-lenh {
+		display: grid;
+		gap: 10px;
+		margin-top: 4px;
+		padding-top: 10px;
+		border-top: 1px dashed var(--ke);
+	}
+	.hang-duyet {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 10px;
+	}
+	.nut-tu-choi {
+		min-height: 46px;
+		padding: 0 16px;
+		border: 1px solid #f3c4bd;
+		border-radius: 999px;
+		background: var(--xau-nhat);
 		color: var(--xau);
+		font: 600 0.875rem var(--sans);
+		cursor: pointer;
 	}
 </style>

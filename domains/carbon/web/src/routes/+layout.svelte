@@ -10,8 +10,8 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href="/nen/logo.webp" type="image/webp" />
-	<meta name="theme-color" content="#024f46" />
+	<link rel="icon" href="/nen/logo-transparent.png" type="image/png" />
+	<meta name="theme-color" content="#0b5d4c" />
 </svelte:head>
 
 {@render children()}

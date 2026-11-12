@@ -18,4 +18,4 @@
 
 Hai ảnh màu thật chỉ chỉnh màu toàn ảnh để dễ nhìn (TiTiler `color_formula`: `Gamma RGB 1.15 Sigmoidal RGB 6 0.35 Saturation 1.4`, lấy mẫu `cubic`); không vẽ thêm, không ghép, không dùng ảnh do AI tạo.
 
-`../nen/logo.webp` (biểu tượng tab trình duyệt) là logo của nhóm (`docs/images/logo.png`) đã tách nền, thu 160 px, cùng giấy phép dự án.
+`../nen/logo.webp` (160 px) và `../nen/logo-transparent.png` (512 px, logo trên thanh đầu trang và biểu tượng tab trình duyệt) là logo của nhóm (`docs/images/logo.png`) đã tách nền, cùng giấy phép dự án.

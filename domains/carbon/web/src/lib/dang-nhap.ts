@@ -31,7 +31,11 @@ function duongQuayVe(): string {
 	return `${location.origin}/dang-nhap/xong`;
 }
 
-export async function batDauDangNhap(): Promise<void> {
+/**
+ * Mở trang đăng nhập Keycloak. `goiYTen` (tên đăng nhập, ví dụ "canbo-htx-mau") chỉ điền sẵn ô tên qua tham số OIDC
+ * login_hint; người dùng vẫn phải nhập mật khẩu.
+ */
+export async function batDauDangNhap(goiYTen?: string): Promise<void> {
 	const verifier = ngauNhien(48);
 	const state = ngauNhien(16);
 	sessionStorage.setItem(KHOA.verifier, verifier);
@@ -45,6 +49,7 @@ export async function batDauDangNhap(): Promise<void> {
 		code_challenge: await thachThuc(verifier),
 		code_challenge_method: 'S256'
 	});
+	if (goiYTen) q.set('login_hint', goiYTen);
 	location.assign(`${REALM}/auth?${q}`);
 }
 

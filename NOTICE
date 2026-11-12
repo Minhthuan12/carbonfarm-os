@@ -33,7 +33,8 @@ Dữ liệu: ảnh Sentinel-2 L2A Collection 1 (danh mục STAC Earth Search, AW
 (chứa dữ liệu Copernicus Sentinel đã qua xử lý). Dữ liệu hợp tác xã, xã viên, lô đất trong repo là dữ liệu giả.
 
 Hình ảnh nhận diện (docs/images/banner.png, docs/images/logo.png) và sơ đồ kiến trúc tóm tắt (docs/images/kien-truc.webp, 30/10/2026; biểu tượng các thành phần trong sơ đồ là hình minh hoạ do công cụ sinh ảnh vẽ lại, tên và nhãn hiệu thuộc dự án tương ứng) do nhóm tạo bằng công cụ sinh ảnh
-(Codex imagegen) ngày 29/10/2026, phát hành cùng giấy phép của dự án.
+(Codex imagegen) ngày 29/10/2026, phát hành cùng giấy phép của dự án. Bản tách nền dùng trên web
+(domains/carbon/web/static/nen/logo.webp, logo-transparent.png) cũng theo giấy phép đó.
 
 Ảnh chụp trên trang chủ (Wikimedia Commons, giữ giấy phép riêng):
 - "Intricate prop root system of mangrove tree in Ca Mau Vietnam", Nevillenguyen310, CC BY-SA 4.0
