@@ -15,7 +15,7 @@ Bản demo dùng **dữ liệu giả** (hợp tác xã, xã viên, lô đất, n
 ```bash
 git clone https://github.com/carbonfarm-os/carbonfarm-os.git
 cd carbonfarm-os
-git checkout v0.5.0          # hoặc bản phát hành mới nhất
+git checkout v0.6.0          # hoặc bản phát hành mới nhất
 cp .env.example .env
 ```
 Sửa `.env`:

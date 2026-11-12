@@ -35,11 +35,30 @@ Trang tài liệu (kiến trúc, phương pháp MRV, ADR, dùng thử, có tìm 
 
 **Demo công khai:** https://carbonfarm.dzfullstack.com (dữ liệu giả; tra tín chỉ không cần tài khoản: https://carbonfarm.dzfullstack.com/kiem-chung). Tự triển khai trên máy chủ: [`docs/trien-khai.md`](docs/trien-khai.md).
 
+### Hình ảnh demo · Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/demo/01-trang-chu.webp" alt="Trang chủ công khai của CarbonFarm OS"><br>1. [H] Trang chủ công khai – giới thiệu luồng và thẻ tài khoản mẫu</td>
+    <td width="50%"><img src="docs/images/demo/02-dang-ky-lo-chong-lan.webp" alt="Đăng ký lô bị từ chối vì ranh giới chồng lấn"><br>2. [P] Đăng ký lô (cán bộ HTX) – cơ sở dữ liệu từ chối ranh giới chồng lấn (UC005)</td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/demo/03-duyet-mrv-cap-tin-chi.webp" alt="Duyệt kết quả MRV và cấp 15 tín chỉ"><br>3. [P] Duyệt MRV (cán bộ HTX) – ghi sổ cái, cấp 15 tín chỉ, ví lên 25</td>
+    <td><img src="docs/images/demo/04-ban-hai-can-bo-duyet.webp" alt="Bán 3 tín chỉ, cán bộ thứ hai duyệt"><br>4. [P] Bán 3 tín chỉ – cán bộ thứ hai duyệt chéo, ví còn 22</td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/demo/05-kiem-chung.webp" alt="Kiểm chứng tín chỉ trên sổ cái: Toàn vẹn"><br>5. [D] Kiểm chứng công khai (không cần tài khoản) – sổ cái Dolt báo "Toàn vẹn."</td>
+    <td><img src="docs/images/demo/06-dashboard.webp" alt="Dashboard hợp tác xã trên Metabase"><br>6. [D] Dashboard hợp tác xã (Metabase OSS) – tín chỉ, doanh thu, kết quả đo</td>
+  </tr>
+</table>
+
+Dữ liệu giả. Ảnh nền chứa dữ liệu Copernicus Sentinel đã qua xử lý (2026). Kịch bản trình bày: [`docs/demo/kich-ban-15-phut.md`](docs/demo/kich-ban-15-phut.md).
+
 Chi tiết và sơ đồ: [`docs/architecture.md`](docs/architecture.md). Các quyết định: [`docs/adr/`](docs/adr/).
 *Tier 1 is a generic headless platform; tier 2 holds the carbon domain; connectors are pluggable mocks. See `docs/architecture.md` and the ADRs.*
 
 ## Bắt đầu · Getting started
-Bản mới nhất **v0.5.0** chạy đủ luồng chính trên một máy: Tầng 1 (OpenBao, PostgreSQL + PostGIS + pgSTAC, Keycloak, APISIX, PostGraphile, Versity S3 + STAC + TiTiler, Prefect, Valkey, Dolt) và Tầng 2 (MRV engine, web, connector mô phỏng, Metabase).
+Bản mới nhất **v0.6.0** chạy đủ luồng chính trên một máy: Tầng 1 (OpenBao, PostgreSQL + PostGIS + pgSTAC, Keycloak, APISIX, PostGraphile, Versity S3 + STAC + TiTiler, Prefect, Valkey, Dolt) và Tầng 2 (MRV engine, web, connector mô phỏng, Metabase).
 
 | Địa chỉ | Nội dung |
 |---|---|
@@ -48,7 +67,7 @@ Bản mới nhất **v0.5.0** chạy đủ luồng chính trên một máy: Tầ
 | http://127.0.0.1:3001/ | Dashboard hợp tác xã (Metabase OSS) |
 
 Người dùng mẫu (`canbo-htx-mau`, `canbo-htx-mau-2`, `xavien-mau-1`…) có mật khẩu do OpenBao sinh khi dựng: `docker compose exec keycloak cat /run/bimat/mk-<tên>` (ví dụ `mk-canbo-htx-mau`). Lần chạy đầu OpenBao ghi khóa mở vào `.data/openbao/` (ngoài git) – **giữ kín, mất là không mở được dữ liệu OpenBao**. Dùng thử theo kịch bản: [`docs/thu-nghiem.md`](docs/thu-nghiem.md).
-*v0.5.0 runs the full flow locally; sample users get generated passwords; see `docs/thu-nghiem.md` for a guided trial.*
+*v0.6.0 runs the full flow locally; sample users get generated passwords; see `docs/thu-nghiem.md` for a guided trial.*
 
 ```bash
 cp .env.example .env      # cấu hình máy dev · dev configuration
