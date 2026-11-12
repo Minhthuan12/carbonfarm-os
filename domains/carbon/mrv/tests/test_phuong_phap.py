@@ -62,6 +62,63 @@ class PhuongPhapV01(unittest.TestCase):
         self.assertEqual(kq["dien_tich_tinh_ha"], 8.5, "tán tăng không được tính quá kỳ trước")
         self.assertNotIn("mat_tan", kq["canh_bao"])
 
+    # --- Ca biên (#90): kiểm đúng hành vi hiện tại của hàm ---
+
+    def test_tan_bang_0_thi_co2e_bang_0(self):
+        kq = uoc_luong(self.ts, 0.0, date(2026, 4, 1), date(2026, 4, 30), 2019, 8.8746)
+        self.assertEqual(kq["dien_tich_tinh_ha"], 0)
+        self.assertEqual(kq["co2e_tan"], 0)
+        self.assertEqual(kq["canh_bao"], [])
+
+    def test_ky_mot_ngay_tinh_ca_hai_dau(self):
+        # Từ ngày = đến ngày: kỳ dài 1 ngày (hai đầu đều tính), không phải 0
+        kq = uoc_luong(self.ts, 1.0, date(2026, 4, 1), date(2026, 4, 1), 2019, 1.0)
+        self.assertEqual(kq["so_ngay"], 1)
+        self.assertAlmostEqual(kq["co2e_tan"], 21.7357 / 365, places=3)
+
+    def test_ky_do_dai_0_ngay_thi_co2e_bang_0(self):
+        # Đến ngày ngay trước từ ngày → 0 ngày. CSDL đã chặn kỳ ngược bằng UC013 (003_mrv.sql) trước khi tới hàm.
+        kq = uoc_luong(self.ts, 1.0, date(2026, 4, 2), date(2026, 4, 1), 2019, 1.0)
+        self.assertEqual(kq["so_ngay"], 0)
+        self.assertEqual(kq["co2e_tan"], 0)
+
+    def test_nam_trong_sau_ngay_do_hien_tai_van_tinh_ca_ky(self):
+        # Hành vi hiện tại: tuổi rừng âm không bị chặn, kỳ vẫn tính đủ và không gắn cảnh báo.
+        # CSDL chỉ chặn năm trồng > năm hiện tại (UC007), chưa so với kỳ đo.
+        kq = uoc_luong(self.ts, 1.0, date(2025, 1, 1), date(2025, 12, 31), 2026, 1.0)
+        self.assertEqual(kq["so_ngay"], 365)
+        self.assertEqual(kq["nam_tinh"], 1.0)
+        self.assertAlmostEqual(kq["co2e_tan"], 21.736, places=2)
+        self.assertEqual(kq["canh_bao"], [])
+
+    def test_vuot_tran_giua_ky_chi_tinh_phan_toi_tran(self):
+        # Trần đạt sau 187 / 9,4 ≈ 19,894 năm; rừng trồng 2006, kỳ 2025 → còn ≈ 0,894 năm trong kỳ 1 năm
+        kq = uoc_luong(self.ts, 1.0, date(2025, 1, 1), date(2025, 12, 31), 2006, 1.0)
+        con_lai = 187 / 9.4 - (date(2025, 1, 1) - date(2006, 1, 1)).days / 365.25
+        self.assertAlmostEqual(kq["nam_tinh"], con_lai, places=5)
+        self.assertIn("cham_tran_sinh_khoi", kq["canh_bao"])
+        self.assertAlmostEqual(kq["co2e_tan"], 21.7357 * con_lai, places=2)
+
+    def test_phien_ban_khong_ton_tai_bao_loi(self):
+        with self.assertRaises(FileNotFoundError) as loi:
+            doc_tham_so("v9.9-khong-co", GOC / "methodology")
+        self.assertIn("v9.9-khong-co.yaml", str(loi.exception))
+
+    def test_tep_khai_sai_phien_ban_bao_loi(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tm:
+            (Path(tm) / "v0.2-thu.yaml").write_text("phien_ban: v0.1-rung-ngap-man-ipcc-tier1\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "cần 'v0.2-thu'"):
+                doc_tham_so("v0.2-thu", Path(tm))
+
+    def test_khop_vi_du_tinh_tay_muc_4_5(self):
+        # methodology §4.5: Lô Đất Mũi 1, 8,8746 ha toàn bộ là tán, rừng 5 năm tuổi, kỳ 1 năm ≈ 192,9 t CO₂e
+        kq = uoc_luong(self.ts, 8.8746, date(2026, 1, 1), date(2026, 12, 31), 2021, 8.8746)
+        self.assertEqual(kq["so_ngay"], 365)
+        self.assertAlmostEqual(kq["co2e_tan"], 192.9, delta=0.05)
+        self.assertEqual(kq["canh_bao"], [], "47 t/ha < 187 t/ha → chưa chạm trần")
+
 
 if __name__ == "__main__":
     unittest.main()
