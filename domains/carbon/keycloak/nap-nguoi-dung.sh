@@ -17,6 +17,9 @@ sed -e "s/__MK_CANBO__/$(cat /run/bimat/mk-canbo-htx-mau)/" \
 # realm đã có (bản demo cũ) nên đặt lại ở đây; chạy lại không sao. Chỉ để "vi": nếu thêm "en", Keycloak sẽ
 # theo ngôn ngữ trình duyệt (Accept-Language) và trình duyệt tiếng Anh lại thấy trang tiếng Anh.
 $KC update realms/dxos -s internationalizationEnabled=true -s 'supportedLocales=["vi"]' -s defaultLocale=vi
+# Thương hiệu của miền trên trang đăng nhập: theme carbonfarm (themes/carbonfarm, Tầng 1 chép vào Keycloak lúc khởi động)
+# và tên hiển thị "CarbonFarm OS". Realm vẫn là dxos; realm-dxos.json ở Tầng 1 giữ tên tổng quát.
+$KC update realms/dxos -s loginTheme=carbonfarm -s 'displayName=CarbonFarm OS' -s 'displayNameHtml=CarbonFarm OS'
 $KC create partialImport -r dxos -f "$TAM" -o --fields added,skipped >/dev/null
 # Client công khai của app di động (OIDC + PKCE, redirect vn.carbonfarmos.app:/oauth). Đã có thì bỏ qua (SKIP), nên chạy
 # lại không sao và realm của bản demo cũ cũng nhận client mới. Client "web" ở Tầng 1 không bị đụng tới.

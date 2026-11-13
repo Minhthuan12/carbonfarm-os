@@ -1,0 +1,194 @@
+/* SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors */
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Giao diện đăng nhập CarbonFarm OS: nền sáng xanh nhạt, logo đội, thẻ trắng bo tròn, nút xanh rừng ngập mặn #0b6351
+   (cùng màu với web và app di động). Ghi đè biến PatternFly 5 mà theme keycloak.v2 dùng, không sửa template. */
+
+:root {
+  --cf-xanh: #0b6351;
+  --cf-xanh-dam: #07473a;
+  --cf-xanh-sang: #0f7a63;
+  --cf-nhat: #e1f4ed;
+  --cf-nen: #f4f8f6;
+  --cf-vien: #d6e4de;
+  --cf-chu: #14211d;
+  --cf-chu-phu: #55665f;
+
+  --keycloak-card-top-color: var(--cf-xanh);
+  --pf-v5-global--primary-color--100: var(--cf-xanh);
+  --pf-v5-global--primary-color--200: var(--cf-xanh-dam);
+  --pf-v5-global--link--Color: var(--cf-xanh);
+  --pf-v5-global--link--Color--hover: var(--cf-xanh-dam);
+  --pf-v5-global--active-color--100: var(--cf-xanh);
+  --pf-v5-global--FontFamily--text: "Inter", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --pf-v5-global--FontFamily--heading: var(--pf-v5-global--FontFamily--text);
+  --pf-v5-c-form-control--focus--after--BorderBottomColor: var(--cf-xanh);
+  --pf-v5-c-form-control--hover--after--BorderBottomColor: var(--cf-xanh);
+}
+
+/* Nền: dải xanh nhạt phía trên chuyển dần sang nền sáng, thay ảnh nền tối của Keycloak */
+.login-pf body,
+body#keycloak-bg {
+  background: linear-gradient(180deg, var(--cf-nhat) 0%, var(--cf-nen) 42%, var(--cf-nen) 100%) fixed;
+  color: var(--cf-chu);
+}
+
+.pf-v5-c-login__container {
+  grid-template-columns: minmax(0, 28rem);
+}
+
+/* Đầu trang: logo trong vòng tròn trắng, tên "CarbonFarm OS", dòng mô tả */
+#kc-header {
+  padding-block: 32px 18px;
+}
+
+#kc-header-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: var(--cf-xanh-dam) !important;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  line-height: 1.15;
+}
+
+#kc-header-wrapper::before {
+  content: "";
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: #fff url("../img/logo.png") center / 64% no-repeat;
+  box-shadow: 0 10px 28px rgba(11, 99, 81, 0.16);
+}
+
+#kc-header-wrapper::after {
+  content: "Tín chỉ carbon cho hợp tác xã rừng ngập mặn";
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--cf-chu-phu);
+}
+
+/* Thẻ đăng nhập: trắng, viền mảnh, bo tròn, bóng nhẹ, không có vạch xanh dương trên đầu */
+.pf-v5-c-login__main {
+  background: #fff;
+  border: 1px solid var(--cf-vien);
+  border-radius: 22px;
+  box-shadow: 0 14px 40px rgba(11, 99, 81, 0.1);
+  overflow: hidden;
+}
+
+.pf-v5-c-login__main-header {
+  border-top: 0;
+  padding-block-start: 28px;
+}
+
+#kc-page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--cf-chu);
+  letter-spacing: -0.01em;
+}
+
+.pf-v5-c-form__label-text {
+  font-weight: 600;
+  color: var(--cf-chu);
+}
+
+/* Ô nhập: một viền mảnh bo tròn tự vẽ (bỏ viền và vạch đáy xanh dương của PatternFly), viền xanh khi chọn */
+.pf-v5-c-form-control::before,
+.pf-v5-c-form-control::after {
+  display: none;
+}
+
+.pf-v5-c-form-control {
+  min-height: 48px;
+  border: 1px solid var(--cf-vien);
+  border-radius: 12px;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.pf-v5-c-form-control:focus-within {
+  border-color: var(--cf-xanh);
+  box-shadow: 0 0 0 3px rgba(11, 99, 81, 0.15);
+}
+
+.pf-v5-c-form-control > input,
+.pf-v5-c-form-control > select {
+  font-size: 16px;
+  color: var(--cf-chu);
+  outline: none;
+}
+
+/* Ô mật khẩu và nút hiện mật khẩu chung một khung */
+.pf-v5-c-input-group {
+  border: 1px solid var(--cf-vien);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.pf-v5-c-input-group:focus-within {
+  border-color: var(--cf-xanh);
+  box-shadow: 0 0 0 3px rgba(11, 99, 81, 0.15);
+}
+
+.pf-v5-c-input-group .pf-v5-c-form-control,
+.pf-v5-c-input-group .pf-v5-c-form-control:focus-within {
+  border: 0;
+  box-shadow: none;
+}
+
+.pf-v5-c-input-group .pf-v5-c-button.pf-m-control {
+  color: var(--cf-chu-phu);
+  background: transparent;
+}
+
+.pf-v5-c-input-group .pf-v5-c-button.pf-m-control::after {
+  border: 0;
+}
+
+/* Nút chính: xanh thương hiệu, cao, bo tròn */
+.pf-v5-c-button.pf-m-primary {
+  --pf-v5-c-button--m-primary--BackgroundColor: var(--cf-xanh);
+  --pf-v5-c-button--m-primary--hover--BackgroundColor: var(--cf-xanh-dam);
+  --pf-v5-c-button--m-primary--focus--BackgroundColor: var(--cf-xanh-dam);
+  --pf-v5-c-button--m-primary--active--BackgroundColor: var(--cf-xanh-dam);
+  min-height: 50px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.pf-v5-c-button.pf-m-primary::after {
+  border-radius: 12px;
+}
+
+.pf-v5-c-login__main-footer-band {
+  background: var(--cf-nen);
+}
+
+/* Điện thoại: thẻ cách mép 16px, đầu trang gọn hơn */
+@media (max-width: 575px) {
+  #kc-header {
+    padding-block: 24px 14px;
+  }
+
+  #kc-header-wrapper {
+    font-size: 25px;
+  }
+
+  #kc-header-wrapper::before {
+    width: 80px;
+    height: 80px;
+  }
+
+  .pf-v5-c-login__main {
+    margin-inline: 16px;
+    border-radius: 20px;
+  }
+}
