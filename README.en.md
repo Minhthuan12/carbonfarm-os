@@ -116,6 +116,23 @@ Screenshots use fake data; the background contains modified Copernicus Sentinel 
 
 **Mobile app (Flutter):** two tabs. "Hợp tác xã" (Cooperative, login required) shows the credit wallet and plots; "Kiểm chứng" (Verify, no login) lets you type a serial or scan a QR code. Screen details (Vietnamese): [`domains/carbon/di-dong/README.md`](domains/carbon/di-dong/README.md).
 
+<table>
+  <tr>
+    <td width="25%"><img src="docs/images/di-dong/01-mo-dau.webp" alt="App start screen"><br>1. Start screen, not signed in</td>
+    <td width="25%"><img src="docs/images/di-dong/02-dang-nhap-keycloak.webp" alt="Keycloak sign-in page in Vietnamese"><br>2. Keycloak sign-in in Vietnamese</td>
+    <td width="25%"><img src="docs/images/di-dong/03-vi-tin-chi.webp" alt="Cooperative credit wallet"><br>3. Credit wallet: issued, sold, held</td>
+    <td width="25%"><img src="docs/images/di-dong/04-danh-sach-lo.webp" alt="Plot list"><br>4. Plot list</td>
+  </tr>
+  <tr>
+    <td width="25%"><img src="docs/images/di-dong/05-chi-tiet-lo.webp" alt="Plot details and carbon measurement periods"><br>5. Plot details and measurement periods</td>
+    <td width="25%"><img src="docs/images/di-dong/06-kiem-chung-hop-le.webp" alt="Valid serial verification"><br>6. Serial verification: "Toàn vẹn." (intact)</td>
+    <td width="25%"><img src="docs/images/di-dong/07-kiem-chung-seri-sai.webp" alt="Fake serial verification"><br>7. Fake serial: "Không có bản ghi." (no record)</td>
+    <td width="25%"><img src="docs/images/di-dong/08-quet-qr.webp" alt="QR scanner screen"><br>8. QR code scanner</td>
+  </tr>
+</table>
+
+<p align="center"><img src="docs/images/di-dong/demo-app.gif" alt="Mobile app flow: sign-in, credit wallet, plots, verification" width="300"><br>App flow on the iOS Simulator: sign-in → wallet → plots → verification (fake data, played at 1.5× speed)</p>
+
 ## System architecture
 ![CarbonFarm OS two-tier architecture](docs/images/kien-truc.webp)
 

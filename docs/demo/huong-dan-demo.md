@@ -77,6 +77,14 @@ Simulator iOS và máy ảo không có máy ảnh thật nên không quét QR đ
 | 9 | ![Kiểm chứng trên sổ cái: Toàn vẹn](../images/demo/05-kiem-chung.webp) |
 | 11 | ![Dashboard hợp tác xã](../images/demo/06-dashboard.webp) |
 
+App di động (iOS Simulator, cùng dữ liệu giả; các số trong ví khác với bảng ở mục 2 vì ảnh chụp trước khi bán 3 tín chỉ):
+
+| Bước | Ảnh |
+|---|---|
+| 12 | <img src="../images/di-dong/06-kiem-chung-hop-le.webp" alt="Kiểm chứng sê-ri trên app: Toàn vẹn" width="220"> |
+| 13 | <img src="../images/di-dong/02-dang-nhap-keycloak.webp" alt="Đăng nhập Keycloak tiếng Việt" width="220"> <img src="../images/di-dong/03-vi-tin-chi.webp" alt="Ví tín chỉ trên app" width="220"> |
+| 14 | <img src="../images/di-dong/05-chi-tiet-lo.webp" alt="Chi tiết lô và các kỳ đo" width="220"> |
+
 ## 4. Dọn dẹp
 ```bash
 task down                 # dừng dịch vụ, giữ dữ liệu để chạy lại
