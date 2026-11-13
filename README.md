@@ -114,6 +114,23 @@ Bản MVP gồm một hệ sinh thái (rừng ngập mặn) và một khu vực 
 
 **App di động (Flutter):** có hai thẻ. Thẻ "Hợp tác xã" (đăng nhập) hiện ví tín chỉ và lô đất; thẻ "Kiểm chứng" (không cần đăng nhập) cho gõ sê-ri hoặc quét QR. Mô tả từng màn: [`domains/carbon/di-dong/README.md`](domains/carbon/di-dong/README.md).
 
+<table>
+  <tr>
+    <td width="25%"><img src="docs/images/di-dong/01-mo-dau.webp" alt="Màn mở đầu của app"><br>1. Màn mở đầu, chưa đăng nhập</td>
+    <td width="25%"><img src="docs/images/di-dong/02-dang-nhap-keycloak.webp" alt="Trang đăng nhập Keycloak tiếng Việt"><br>2. Đăng nhập Keycloak tiếng Việt</td>
+    <td width="25%"><img src="docs/images/di-dong/03-vi-tin-chi.webp" alt="Ví tín chỉ của hợp tác xã"><br>3. Ví tín chỉ: đã cấp, đã bán, trong ví</td>
+    <td width="25%"><img src="docs/images/di-dong/04-danh-sach-lo.webp" alt="Danh sách lô đất"><br>4. Danh sách lô đất</td>
+  </tr>
+  <tr>
+    <td width="25%"><img src="docs/images/di-dong/05-chi-tiet-lo.webp" alt="Chi tiết lô và các kỳ đo carbon"><br>5. Chi tiết lô và các kỳ đo</td>
+    <td width="25%"><img src="docs/images/di-dong/06-kiem-chung-hop-le.webp" alt="Kiểm chứng sê-ri hợp lệ"><br>6. Kiểm chứng sê-ri: "Toàn vẹn."</td>
+    <td width="25%"><img src="docs/images/di-dong/07-kiem-chung-seri-sai.webp" alt="Kiểm chứng sê-ri giả"><br>7. Sê-ri giả: "Không có bản ghi."</td>
+    <td width="25%"><img src="docs/images/di-dong/08-quet-qr.webp" alt="Màn quét mã QR"><br>8. Quét mã QR</td>
+  </tr>
+</table>
+
+<p align="center"><img src="docs/images/di-dong/demo-app.gif" alt="Luồng app di động: đăng nhập, ví tín chỉ, lô đất, kiểm chứng" width="300"><br>Luồng app trên iOS Simulator: đăng nhập → ví → lô → kiểm chứng (dữ liệu giả, chạy nhanh 1,5 lần)</p>
+
 ## Kiến trúc hệ thống
 ![Sơ đồ kiến trúc hai tầng của CarbonFarm OS](docs/images/kien-truc.webp)
 
