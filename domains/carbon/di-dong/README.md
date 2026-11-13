@@ -13,7 +13,7 @@ App Flutter (Android + iOS) cho miền carbon (Tầng 2). App chỉ gọi API c�
 
 ## Chuẩn bị
 - Flutter 3.50 trở lên (`brew install --cask flutter`), kiểm bằng `flutter doctor`.
-- Android: Android SDK (Android Studio hoặc command-line tools), JDK 17.
+- Android: Android SDK (Android Studio hoặc command-line tools), JDK 21 (lint của Gradle khi build release cần JDK 21).
 - iOS: Xcode 27, chỉ trên macOS.
 
 ```bash
