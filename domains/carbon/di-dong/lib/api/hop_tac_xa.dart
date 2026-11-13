@@ -76,6 +76,7 @@ class KetQuaMrv {
     this.dienTichTanHa,
     this.seriTu,
     this.soTinChi,
+    this.lyDo,
   });
 
   factory KetQuaMrv.tuJson(Map<String, dynamic> j) {
@@ -89,6 +90,7 @@ class KetQuaMrv {
       dienTichTanHa: j['dienTichTanHa'] == null ? null : _so(j['dienTichTanHa']),
       seriTu: daCap ? cap!['seriTu'] as String? : null,
       soTinChi: daCap ? cap!['soLuong'] as int? : null,
+      lyDo: _lyDo(j),
     );
   }
 
@@ -101,6 +103,23 @@ class KetQuaMrv {
   /// Sê-ri đầu tiên nếu kết quả này đã được cấp tín chỉ (để mở màn kiểm chứng).
   final String? seriTu;
   final int? soTinChi;
+
+  /// Lý do do máy chủ ghi: lỗi khi đo (lyDoLoi) hoặc ghi chú của cán bộ khi từ chối (ghiChuDuyet). Null nếu không có.
+  final String? lyDo;
+
+  bool get laLoi => trangThai == 'loi' || trangThai == 'tu_choi';
+}
+
+/// Lấy lý do hiển thị cho kỳ lỗi/bị từ chối. Lý do lỗi của MRV engine có kèm danh sách cảnh ảnh đã thử dạng kỹ thuật
+/// ("… (đã thử [{'canh_id': …}])"); chỉ giữ câu tiếng Việt phía trước, chi tiết vẫn xem được trên web.
+String? _lyDo(Map<String, dynamic> j) {
+  final s = switch (j['trangThai']) {
+    'loi' => j['lyDoLoi'] as String?,
+    'tu_choi' => j['ghiChuDuyet'] as String?,
+    _ => null,
+  };
+  final gon = s?.split(' (đã thử').first.trim();
+  return (gon == null || gon.isEmpty) ? null : gon;
 }
 
 /// PostGraphile trả numeric dạng chuỗi (BigFloat), số nguyên dạng số.
@@ -121,7 +140,10 @@ const _truyVanTongQuan = '''
 const _truyVanLo = r'''
 query($lo: UUID!) {
   allCarbonKetQuaMrvs(condition: { loDatId: $lo }) {
-    nodes { kyTu kyDen trangThai co2ETan dienTichTanHa carbonDeNghiCapByKetQuaMrvId { trangThai soLuong seriTu } }
+    nodes {
+      kyTu kyDen trangThai co2ETan dienTichTanHa lyDoLoi ghiChuDuyet
+      carbonDeNghiCapByKetQuaMrvId { trangThai soLuong seriTu }
+    }
   }
 }''';
 

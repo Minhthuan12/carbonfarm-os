@@ -91,7 +91,14 @@ class _ManHopTacXaState extends State<ManHopTacXa> {
     final nd = widget.phien.nguoiDung;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_du?.tenHtx.isNotEmpty == true ? _du!.tenHtx : 'Hợp tác xã'),
+        // Tên hợp tác xã có thể dài ("HTX Rừng ngập mặn Đất Mũi (dữ liệu giả)"): cho xuống tối đa 2 dòng, chữ nhỏ hơn
+        toolbarHeight: 72,
+        title: Text(
+          _du?.tenHtx.isNotEmpty == true ? _du!.tenHtx : 'Hợp tác xã',
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 19, height: 1.25, fontWeight: FontWeight.w500),
+        ),
         actions: [
           if (nd != null)
             IconButton(tooltip: 'Đăng xuất', icon: const Icon(Icons.logout), onPressed: () => widget.phien.dangXuat()),

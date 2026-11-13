@@ -96,6 +96,7 @@ class _ManChiTietLoState extends State<ManChiTietLo> {
                   );
                 }
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     for (final k in ds) ...[_TheKy(k: k, onTraSeri: widget.onTraSeri), const SizedBox(height: 8)],
                   ],
@@ -124,9 +125,19 @@ class _TheKy extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${k.kyTu} → ${k.kyDen}', style: t.titleMedium),
+            Text('${ngayVn(k.kyTu)} → ${ngayVn(k.kyDen)}', style: t.titleMedium),
             const SizedBox(height: 4),
-            Text(_trangThai[k.trangThai] ?? k.trangThai, style: t.bodyMedium?.copyWith(color: mauChinhDam)),
+            Text(
+              _trangThai[k.trangThai] ?? k.trangThai,
+              style: t.bodyMedium?.copyWith(
+                color: k.laLoi ? mauXau : mauChinhDam,
+                fontWeight: k.laLoi ? FontWeight.w600 : null,
+              ),
+            ),
+            if (k.laLoi && k.lyDo != null) ...[
+              const SizedBox(height: 4),
+              Text(k.lyDo!, style: t.bodyMedium?.copyWith(color: mauXau)),
+            ],
             if (k.co2eTan != null) ...[
               const SizedBox(height: 8),
               Text('${soVn(k.co2eTan!, le: 2)} t CO₂e', style: t.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
