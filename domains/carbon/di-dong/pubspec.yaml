@@ -18,6 +18,7 @@ dependencies:
   flutter_appauth: ^13.0.0
   flutter_secure_storage: ^11.2.0
   flutter_zxing: ^3.1.1
+  forui: ^0.27.0
 
 dev_dependencies:
   flutter_test:

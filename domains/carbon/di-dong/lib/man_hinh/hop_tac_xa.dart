@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Màn "Hợp tác xã": chưa đăng nhập thì hiện nút đăng nhập; đã đăng nhập thì hiện ví tín chỉ (đã cấp, đã bán, trong ví)
-// và danh sách lô đất của hợp tác xã. Kéo xuống để tải lại. 401 → bỏ phiên, mời đăng nhập lại.
+// Màn "Hợp tác xã": chưa đăng nhập thì hiện màn mở đầu có nút đăng nhập; đã đăng nhập thì hiện ví tín chỉ kiểu ví điện
+// tử (số dư nổi bật, dải sê-ri dạng thẻ) và danh sách lô đất. Kéo xuống để tải lại. 401 → bỏ phiên, mời đăng nhập lại.
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../api/hop_tac_xa.dart';
@@ -89,60 +90,43 @@ class _ManHopTacXaState extends State<ManHopTacXa> {
   @override
   Widget build(BuildContext context) {
     final nd = widget.phien.nguoiDung;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_du?.tenHtx.isNotEmpty == true ? _du!.tenHtx : 'Hợp tác xã'),
-        actions: [
-          if (nd != null)
-            IconButton(tooltip: 'Đăng xuất', icon: const Icon(Icons.logout), onPressed: () => widget.phien.dangXuat()),
-        ],
+    if (nd == null) return _ManMoDau(dangMo: _dangDangNhap, loi: _loiDangNhap, onDangNhap: _dangNhap);
+    return ColoredBox(
+      color: mauNen,
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FHeader(
+              // Tên hợp tác xã có thể dài ("HTX Rừng ngập mặn Đất Mũi (dữ liệu giả)"): tối đa 2 dòng, không cắt cụt
+              title: Text(
+                _du?.tenHtx.isNotEmpty == true ? _du!.tenHtx : 'Hợp tác xã',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: context.chu.display.lg.copyWith(fontWeight: FontWeight.w700, color: mauChu, height: 1.2),
+              ),
+              suffixes: [
+                FHeaderAction(
+                  icon: const Icon(FLucideIcons.logOut),
+                  semanticsLabel: 'Đăng xuất',
+                  onPress: () => widget.phien.dangXuat(),
+                ),
+              ],
+            ),
+            Expanded(child: _noiDung(context, nd)),
+          ],
+        ),
       ),
-      body: nd == null ? _manDangNhap(context) : _noiDung(context, nd),
-    );
-  }
-
-  Widget _manDangNhap(BuildContext context) {
-    final t = Theme.of(context).textTheme;
-    return ListView(
-      padding: const EdgeInsets.all(24),
-      children: [
-        const SizedBox(height: 24),
-        Center(child: Image.asset('assets/logo.png', width: 96, height: 96)),
-        const SizedBox(height: 16),
-        Text(
-          'CarbonFarm',
-          style: t.headlineMedium?.copyWith(color: mauChinh, fontWeight: FontWeight.w700),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Cán bộ hợp tác xã đăng nhập để xem lô đất và ví tín chỉ carbon.',
-          style: t.bodyLarge,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 32),
-        if (_loiDangNhap != null) ...[_BaoLoi(_loiDangNhap!), const SizedBox(height: 16)],
-        FilledButton.icon(
-          onPressed: _dangDangNhap ? null : _dangNhap,
-          icon: const Icon(Icons.login),
-          label: Text(_dangDangNhap ? 'Đang mở trang đăng nhập…' : 'Đăng nhập'),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Kiểm chứng tín chỉ không cần đăng nhập: chọn thẻ "Kiểm chứng" bên dưới.',
-          style: t.bodyMedium,
-          textAlign: TextAlign.center,
-        ),
-      ],
     );
   }
 
   Widget _noiDung(BuildContext context, NguoiDung nd) {
     final du = _du;
-    if (du == null && _dangTai) return const Center(child: CircularProgressIndicator());
+    if (du == null && _dangTai) return const Center(child: FCircularProgress());
     if (du == null && _loi != null) {
       return KhungThongBao(
-        icon: _loi is LoiMang ? Icons.wifi_off : Icons.error_outline,
+        icon: _loi is LoiMang ? FLucideIcons.wifiOff : FLucideIcons.triangleAlert,
         tieuDe: _loi is LoiMang ? 'Mất kết nối' : 'Không tải được dữ liệu',
         noiDung: _loi.toString(),
         nut: 'Thử lại',
@@ -150,54 +134,74 @@ class _ManHopTacXaState extends State<ManHopTacXa> {
       );
     }
     if (du == null) return const SizedBox.shrink();
-    final t = Theme.of(context).textTheme;
+    final chu = context.chu;
     return RefreshIndicator(
+      color: mauChinh,
       onRefresh: _tai,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
         children: [
-          Text('Xin chào, ${nd.ten}', style: t.titleMedium),
-          Text(du.laCanBo ? 'Cán bộ hợp tác xã' : 'Xã viên (chỉ xem)', style: t.bodyMedium),
-          if (_loi != null) ...[const SizedBox(height: 12), _BaoLoi(_loi.toString())],
+          Text(
+            'Xin chào, ${nd.ten}',
+            style: chu.body.lg.copyWith(fontWeight: FontWeight.w600, color: mauChu),
+          ),
+          const SizedBox(height: 2),
+          Text(du.laCanBo ? 'Cán bộ hợp tác xã' : 'Xã viên (chỉ xem)', style: chu.body.sm.copyWith(color: mauChuPhu)),
+          if (_loi != null) ...[
+            const SizedBox(height: 12),
+            FAlert(variant: .destructive, title: const Text('Chưa tải lại được'), subtitle: Text(_loi.toString())),
+          ],
           const SizedBox(height: 16),
-          _TheVi(du: du, onTraSeri: _moKiemChung),
-          const SizedBox(height: 24),
-          Text('Lô đất (${du.lo.length})', style: t.titleLarge),
-          const SizedBox(height: 8),
+          _TheSoDu(du: du),
+          const SizedBox(height: 22),
+          _TieuDeMuc(du.vi.isEmpty ? 'Dải sê-ri' : 'Dải sê-ri đang nắm giữ (${du.vi.length})'),
+          const SizedBox(height: 10),
+          if (du.vi.isEmpty)
+            const _OTrong(icon: FLucideIcons.walletCards, noiDung: 'Ví hiện chưa có tín chỉ khả dụng.')
+          else
+            for (final k in du.vi) ...[
+              _TheSeri(khoi: k, onNhan: () => _moKiemChung(k.seriTu)),
+              const SizedBox(height: 10),
+            ],
+          const SizedBox(height: 14),
+          _TieuDeMuc('Lô đất (${du.lo.length})'),
+          const SizedBox(height: 10),
           if (du.lo.isEmpty)
-            const Card(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Text('Hợp tác xã chưa có lô đất nào. Cán bộ đăng ký lô mới trên web.'),
-              ),
+            const _OTrong(
+              icon: FLucideIcons.landPlot,
+              noiDung: 'Hợp tác xã chưa có lô đất nào. Cán bộ đăng ký lô mới trên web.',
             )
           else
-            for (final lo in du.lo) ...[
-              Card(
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  leading: const CircleAvatar(
-                    backgroundColor: mauNhat,
-                    child: Icon(Icons.forest, color: mauChinh),
-                  ),
-                  title: Text(lo.ten, style: t.titleMedium),
-                  subtitle: Text(
-                    [
-                      '${soVn(lo.dienTichHa, le: 2)} ha',
-                      if (lo.namTrong != null) 'trồng ${lo.namTrong}',
-                      if (lo.xaVien != null) lo.xaVien!,
-                    ].join(' · '),
-                  ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ManChiTietLo(lo: lo, api: widget.api, onTraSeri: _moKiemChung),
+            FTileGroup(
+              children: [
+                for (final lo in du.lo)
+                  FTile(
+                    prefix: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(color: mauNhat, borderRadius: BorderRadius.circular(12)),
+                      child: const Icon(FLucideIcons.trees, color: mauChinh, size: 22),
+                    ),
+                    title: Text(
+                      lo.ten,
+                      style: chu.body.md.copyWith(fontWeight: FontWeight.w600, color: mauChu),
+                    ),
+                    subtitle: Text(
+                      [
+                        '${soVn(lo.dienTichHa, le: 2)} ha',
+                        if (lo.namTrong != null) 'trồng ${lo.namTrong}',
+                        if (lo.xaVien != null) lo.xaVien!,
+                      ].join(' · '),
+                    ),
+                    suffix: const Icon(FLucideIcons.chevronRight),
+                    onPress: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ManChiTietLo(lo: lo, api: widget.api, onTraSeri: _moKiemChung),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 8),
-            ],
+              ],
+            ),
         ],
       ),
     );
@@ -212,58 +216,75 @@ class _ManHopTacXaState extends State<ManHopTacXa> {
   }
 }
 
-class _TheVi extends StatelessWidget {
-  const _TheVi({required this.du, required this.onTraSeri});
+/// Màn mở đầu khi chưa đăng nhập: logo, lời giới thiệu ngắn, nút đăng nhập.
+class _ManMoDau extends StatelessWidget {
+  const _ManMoDau({required this.dangMo, required this.loi, required this.onDangNhap});
 
-  final TongQuanHtx du;
-  final void Function(String seri) onTraSeri;
+  final bool dangMo;
+  final String? loi;
+  final VoidCallback onDangNhap;
 
   @override
   Widget build(BuildContext context) {
-    final t = Theme.of(context).textTheme;
-    Widget so(String nhan, int v, {bool chinh = false}) => Expanded(
-      child: Column(
-        children: [
-          Text(
-            soVn(v),
-            style: (chinh ? t.headlineMedium : t.headlineSmall)?.copyWith(
-              color: chinh ? mauChinh : null,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          Text(nhan, style: t.bodyMedium, textAlign: TextAlign.center),
-        ],
+    final chu = context.chu;
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [mauNhat, mauNen],
+          stops: [0, 0.55],
+        ),
       ),
-    );
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
           children: [
-            Row(
-              children: [
-                Text('Ví tín chỉ', style: t.titleLarge),
-                const Spacer(),
-                Text('1 tín chỉ = 1 t CO₂e', style: t.bodySmall),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(children: [so('Đã cấp', du.daCap), so('Đã bán', du.daBan), so('Trong ví', du.trongVi, chinh: true)]),
-            const Divider(height: 32),
-            if (du.vi.isEmpty)
-              Text('Ví hiện chưa có tín chỉ khả dụng.', style: t.bodyLarge)
-            else ...[
-              Text('Dải sê-ri đang nắm giữ', style: t.titleSmall),
-              for (final k in du.vi)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(k.seriTu, style: const TextStyle(fontFamily: 'monospace', fontSize: 15)),
-                  subtitle: Text('→ ${k.seriDen} · ${soVn(k.soLuong)} tín chỉ'),
-                  trailing: const Icon(Icons.verified_outlined, color: mauChinh),
-                  onTap: () => onTraSeri(k.seriTu),
+            Center(
+              child: Container(
+                width: 96,
+                height: 96,
+                padding: const EdgeInsets.all(18),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [BoxShadow(color: Color(0x220B6351), blurRadius: 24, offset: Offset(0, 10))],
                 ),
+                child: Image.asset('assets/logo.png'),
+              ),
+            ),
+            const SizedBox(height: 22),
+            Text(
+              'CarbonFarm',
+              textAlign: TextAlign.center,
+              style: chu.display.xl2.copyWith(color: mauChinhDam, fontWeight: FontWeight.w800, letterSpacing: -0.5),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Tín chỉ carbon cho hợp tác xã rừng ngập mặn',
+              textAlign: TextAlign.center,
+              style: chu.body.md.copyWith(color: mauChuPhu),
+            ),
+            const SizedBox(height: 30),
+            const _DongLoiIch(icon: FLucideIcons.walletCards, noiDung: 'Xem số dư và các dải sê-ri trong ví'),
+            const _DongLoiIch(icon: FLucideIcons.trees, noiDung: 'Theo dõi lô đất và các kỳ đo từ vệ tinh'),
+            const _DongLoiIch(icon: FLucideIcons.shieldCheck, noiDung: 'Kiểm chứng tín chỉ trên sổ cái công khai'),
+            const SizedBox(height: 26),
+            if (loi != null) ...[
+              FAlert(variant: .destructive, title: const Text('Chưa đăng nhập được'), subtitle: Text(loi!)),
+              const SizedBox(height: 14),
             ],
+            FButton(
+              onPress: dangMo ? null : onDangNhap,
+              prefix: const Icon(FLucideIcons.logIn),
+              child: Text(dangMo ? 'Đang mở trang đăng nhập…' : 'Đăng nhập'),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              'Dành cho cán bộ hợp tác xã. Kiểm chứng tín chỉ không cần đăng nhập: chọn thẻ "Kiểm chứng" bên dưới.',
+              textAlign: TextAlign.center,
+              style: chu.body.sm.copyWith(color: mauChuPhu),
+            ),
           ],
         ),
       ),
@@ -271,14 +292,213 @@ class _TheVi extends StatelessWidget {
   }
 }
 
-class _BaoLoi extends StatelessWidget {
-  const _BaoLoi(this.thongBao);
-  final String thongBao;
+class _DongLoiIch extends StatelessWidget {
+  const _DongLoiIch({required this.icon, required this.noiDung});
+
+  final IconData icon;
+  final String noiDung;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(color: mauXauNhat, borderRadius: BorderRadius.circular(12)),
-    child: Text(thongBao, style: const TextStyle(color: mauXau, fontSize: 16)),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      children: [
+        Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(11)),
+          child: Icon(icon, size: 20, color: mauChinh),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(noiDung, style: context.chu.body.sm.copyWith(color: mauChu)),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Thẻ số dư kiểu ví điện tử: số tín chỉ trong ví thật lớn, đã cấp / đã bán bên dưới.
+class _TheSoDu extends StatelessWidget {
+  const _TheSoDu({required this.du});
+
+  final TongQuanHtx du;
+
+  @override
+  Widget build(BuildContext context) {
+    final chu = context.chu;
+    const trang = Colors.white;
+    Widget phu(String nhan, int v, String khoa) => Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(color: const Color(0x1FFFFFFF), borderRadius: BorderRadius.circular(14)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(nhan, style: chu.body.sm.copyWith(color: const Color(0xCCFFFFFF))),
+            const SizedBox(height: 2),
+            Text(
+              soVn(v),
+              key: Key(khoa),
+              style: chu.display.lg.copyWith(color: trang, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+      ),
+    );
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF0F7A63), mauChinh, mauChinhDam],
+        ),
+        boxShadow: const [BoxShadow(color: Color(0x330B6351), blurRadius: 24, offset: Offset(0, 10))],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(FLucideIcons.walletCards, color: trang, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Ví tín chỉ',
+                style: chu.body.md.copyWith(color: trang, fontWeight: FontWeight.w600),
+              ),
+              const Spacer(),
+              Text('1 tín chỉ = 1 t CO₂e', style: chu.body.xs.copyWith(color: const Color(0xCCFFFFFF))),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text('Trong ví', style: chu.body.sm.copyWith(color: const Color(0xCCFFFFFF))),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                soVn(du.trongVi),
+                key: const Key('so-trong-vi'),
+                style: chu.display.xl5.copyWith(color: trang, fontWeight: FontWeight.w800, height: 1.05),
+              ),
+              const SizedBox(width: 8),
+              Text('tín chỉ', style: chu.body.lg.copyWith(color: const Color(0xE6FFFFFF))),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              phu('Đã cấp', du.daCap, 'so-da-cap'),
+              const SizedBox(width: 10),
+              phu('Đã bán', du.daBan, 'so-da-ban'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Một dải sê-ri trong ví, dạng thẻ; chạm để kiểm chứng sê-ri đầu tiên.
+class _TheSeri extends StatelessWidget {
+  const _TheSeri({required this.khoi, required this.onNhan});
+
+  final KhoiTinChi khoi;
+  final VoidCallback onNhan;
+
+  @override
+  Widget build(BuildContext context) {
+    final chu = context.chu;
+    final mono = chu.body.sm.copyWith(fontFamily: 'monospace', color: mauChu, letterSpacing: 0.2);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onNhan,
+        child: TheNoiDung(
+          padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+          child: Row(
+            children: [
+              Container(
+                width: 52,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(color: mauNhat, borderRadius: BorderRadius.circular(12)),
+                child: Column(
+                  children: [
+                    Text(
+                      soVn(khoi.soLuong),
+                      style: chu.display.lg.copyWith(color: mauChinhDam, fontWeight: FontWeight.w800),
+                    ),
+                    Text('tín chỉ', style: chu.body.xs.copyWith(color: mauChinhDam)),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                // Mã sê-ri dài 22 ký tự: mỗi mã một dòng, thu nhỏ vừa khung chứ không xuống dòng giữa mã
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (final (nhan, ma) in [('Từ', khoi.seriTu), ('Đến', khoi.seriDen)])
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 1),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 40,
+                              child: Text(nhan, style: chu.body.xs.copyWith(color: mauChuPhu)),
+                            ),
+                            Expanded(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(ma, maxLines: 1, style: mono),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              const Icon(FLucideIcons.shieldCheck, color: mauChinh, size: 22),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TieuDeMuc extends StatelessWidget {
+  const _TieuDeMuc(this.nhan);
+  final String nhan;
+
+  @override
+  Widget build(BuildContext context) => Text(
+    nhan,
+    style: context.chu.display.md.copyWith(fontWeight: FontWeight.w700, color: mauChu),
+  );
+}
+
+class _OTrong extends StatelessWidget {
+  const _OTrong({required this.icon, required this.noiDung});
+
+  final IconData icon;
+  final String noiDung;
+
+  @override
+  Widget build(BuildContext context) => TheNoiDung(
+    child: Row(
+      children: [
+        Icon(icon, color: mauChuPhu),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(noiDung, style: context.chu.body.md.copyWith(color: mauChuPhu)),
+        ),
+      ],
+    ),
   );
 }

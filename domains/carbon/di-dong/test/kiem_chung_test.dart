@@ -17,7 +17,7 @@ import 'du_lieu_gia.dart';
 
 const goc = 'https://gateway.test';
 
-Widget boc(Widget w) => MaterialApp(theme: giaoDien(), home: w);
+Widget boc(Widget w) => ungDungCarbonFarm(home: w);
 
 void main() {
   group('API kiểm chứng công khai', () {
@@ -129,7 +129,11 @@ void main() {
       await t.tap(find.byKey(const Key('nut-tra')));
       await t.pumpAndSettle();
       expect(find.text('Không có bản ghi.'), findsOneWidget);
-      expect(find.textContaining('Sổ cái không có bản ghi cấp cho tín chỉ MCK-GIA0-26-0000000001'), findsOneWidget);
+      expect(
+        find.textContaining('Sổ cái không có bản ghi cấp cho tín chỉ ${giuSeriLien('MCK-GIA0-26-0000000001')}'),
+        findsOneWidget,
+        reason: 'thông báo của máy chủ, số sê-ri hiển thị bằng gạch nối không ngắt dòng',
+      );
       expect(find.text('Toàn vẹn.'), findsNothing);
       await t.tap(find.byKey(const Key('nut-xoa')));
       await t.pump();

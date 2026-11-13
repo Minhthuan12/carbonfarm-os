@@ -69,7 +69,8 @@ services:
         KC_CLIENT_SECRET_KIEM_THU="$$(cat /run/bimat/kc-kiem-thu)"
         KC_CLIENT_SECRET_KIEM_THU_QUAN_TRI="$$(cat /run/bimat/kc-kiem-thu-quan-tri)"
         KC_MAT_KHAU_NGUOI_DUNG_MAU="$$(cat /run/bimat/nguoi-dung-mau)"
-        && exec /opt/keycloak/bin/kc.sh start-dev --import-realm
+        && for t in /cau-hinh/mien/*/keycloak/themes/*/; do [ -d "$$t" ] && cp -r "$$t" /opt/keycloak/themes/; done;
+        exec /opt/keycloak/bin/kc.sh start-dev --import-realm
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
@@ -83,6 +84,9 @@ services:
       KC_HEALTH_ENABLED: "true"
     volumes:
       - ../platform/keycloak/realm-dxos.json:/opt/keycloak/data/import/realm-dxos.json:ro
+      # Theme giao diện của các miền (domains/*/keycloak/themes/*) được chép vào Keycloak lúc khởi động – cơ chế tổng
+      # quát như route gateway; Tầng 1 không chứa thương hiệu của miền nào. Miền tự chọn theme cho realm khi nạp dữ liệu.
+      - ../domains:/cau-hinh/mien:ro
       - bimat:/run/bimat:ro
     depends_on:
       postgres:
