@@ -20,7 +20,7 @@ Dự án làm theo **trunk-based development**: chỉ có một nhánh dài hạ
 **Ai làm thì người đó commit bằng tài khoản GitHub của mình.** Lịch sử commit là bằng chứng đóng góp của từng thành viên.
 
 ## 3. Quyết định kỹ thuật: ADR
-Mỗi lựa chọn có ảnh hưởng lâu dài (thêm thành phần, đổi cấu trúc, đổi phương pháp MRV) ghi thành một **ADR** trong `docs/adr/`, theo mẫu `docs/adr/0000-mau.md`. ADR đi cùng PR thực hiện nó. Người viết ADR là người trình bày phần đó ở chung kết.
+Mỗi lựa chọn có ảnh hưởng lâu dài (thêm thành phần, đổi cấu trúc, đổi phương pháp MRV) ghi thành một **ADR** trong `docs/adr/`, theo mẫu `docs/adr/0000-mau.md`. ADR đi cùng PR thực hiện nó. Người viết ADR là người nắm rõ và giải thích được quyết định đó.
 
 ## 4. Giấy phép và phụ thuộc
 - Mọi tệp mã có header SPDX hai dòng (`task license` tự thêm, `task check` kiểm):
