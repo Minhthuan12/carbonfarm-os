@@ -63,6 +63,9 @@ Trạng thái: ✔ đang chạy · ◐ đã chọn, đang dựng · ☐ dự ki�
 |---|---|---|---|---|
 | Flutter SDK (engine, framework, Dart SDK) | 3.50.0 / Dart 3.14.0 | BSD-3-Clause | github.com/flutter/flutter | Khung app Android + iOS |
 | material_ui | 1.11.0 | BSD-3-Clause | github.com/flutter/packages | Thành phần giao diện Material |
+| forui | 0.27.7 | MIT | github.com/duobaseio/forui | Bộ thành phần giao diện của app (nút, tiêu đề, thanh điều hướng, ô nhập, nhãn), theme riêng của CarbonFarm |
+| forui_lucide (bộ biểu tượng Lucide) | 0.27.0 | MIT (gói) / ISC (biểu tượng Lucide) | github.com/duobaseio/forui · github.com/lucide-icons/lucide | Biểu tượng của app |
+| sugar | 4.0.0 | MIT | github.com/forus-labs/cauldron | Tiện ích Dart, phụ thuộc của forui |
 | http | 1.6.0 | BSD-3-Clause | github.com/dart-lang/http | Gọi GraphQL và API kiểm chứng |
 | flutter_appauth | 13.0.0 | BSD-3-Clause | github.com/MaikuB/flutter_appauth | Đăng nhập OIDC + PKCE qua trình duyệt hệ thống |
 | AppAuth-iOS / AppAuth-Android (`net.openid:appauth`) | 3.0.0 / 0.11.1 | Apache-2.0 | github.com/openid/AppAuth-iOS · github.com/openid/AppAuth-Android | Thư viện native của flutter_appauth |

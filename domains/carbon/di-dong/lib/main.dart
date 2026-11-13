@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 // App di động CarbonFarm (Tầng 2, miền carbon): cán bộ hợp tác xã xem lô đất và ví tín chỉ; ai cũng kiểm chứng được
-// sê-ri tín chỉ trên sổ cái công khai. Chỉ gọi API có sẵn của gateway, không có backend riêng.
+// sê-ri tín chỉ trên sổ cái công khai. Chỉ gọi API có sẵn của gateway, không có backend riêng. Giao diện dùng forui.
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'api/graphql.dart';
@@ -34,14 +35,9 @@ class CarbonFarmApp extends StatelessWidget {
   final KiemChungApi kiemChungApi;
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CarbonFarm',
-      debugShowCheckedModeBanner: false,
-      theme: giaoDien(),
-      home: TrangChinh(phien: phien, htxApi: htxApi, kiemChungApi: kiemChungApi),
-    );
-  }
+  Widget build(BuildContext context) => ungDungCarbonFarm(
+    home: TrangChinh(phien: phien, htxApi: htxApi, kiemChungApi: kiemChungApi),
+  );
 }
 
 class TrangChinh extends StatefulWidget {
@@ -60,28 +56,31 @@ class _TrangChinhState extends State<TrangChinh> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
+    return FScaffold(
+      childPad: false,
+      footer: DecoratedBox(
+        // Cùng màu nền với thanh điều hướng của forui, kéo xuống hết vùng an toàn dưới đáy máy
+        decoration: const BoxDecoration(
+          color: mauNen,
+          border: Border(top: BorderSide(color: mauVien)),
+        ),
+        child: SafeArea(
+          top: false,
+          child: FBottomNavigationBar(
+            index: _tab,
+            onChange: (i) => setState(() => _tab = i),
+            children: const [
+              FBottomNavigationBarItem(icon: Icon(FLucideIcons.walletCards), label: Text('Hợp tác xã')),
+              FBottomNavigationBarItem(icon: Icon(FLucideIcons.shieldCheck), label: Text('Kiểm chứng')),
+            ],
+          ),
+        ),
+      ),
+      child: IndexedStack(
         index: _tab,
         children: [
           ManHopTacXa(phien: widget.phien, api: widget.htxApi, kiemChungApi: widget.kiemChungApi),
           ManKiemChung(api: widget.kiemChungApi),
-        ],
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _tab,
-        onDestinationSelected: (i) => setState(() => _tab = i),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.groups_outlined),
-            selectedIcon: Icon(Icons.groups),
-            label: 'Hợp tác xã',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.verified_outlined),
-            selectedIcon: Icon(Icons.verified),
-            label: 'Kiểm chứng',
-          ),
         ],
       ),
     );

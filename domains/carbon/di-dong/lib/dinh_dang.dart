@@ -21,3 +21,8 @@ String ngayVn(String iso) {
   final m = RegExp(r'^(\d{4})-(\d{2})-(\d{2})').firstMatch(iso);
   return m == null ? iso : '${m[3]}/${m[2]}/${m[1]}';
 }
+
+/// Đổi gạch nối trong số sê-ri (MCK-DM01-26-0000000001) sang gạch nối không ngắt dòng (U+2011) để chữ không bị tách đôi
+/// ở "MCK-" khi xuống dòng. Chỉ dùng khi hiển thị; giá trị gửi lên API giữ nguyên.
+String giuSeriLien(String s) =>
+    s.replaceAllMapped(RegExp(r'[A-Z0-9]{3}-[A-Z0-9]{4}-\d{2}-\d{10}'), (m) => m[0]!.replaceAll('-', '‑'));

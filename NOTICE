@@ -28,7 +28,8 @@ Thư viện:
 - Phông chữ Source Serif 4 (Adobe) và Inter (Rasmus Andersson), SIL Open Font License 1.1 (gói Fontsource)
 - Connector mock (image carbonfarm/ket-noi): FastAPI (MIT), Starlette (BSD-3-Clause), uvicorn (BSD-3-Clause), pydantic (MIT),
   PyYAML (MIT), Python (PSF-2.0)
-- App di động (domains/carbon/di-dong): Flutter SDK và Dart SDK (BSD-3-Clause), material_ui, http, camera, image_picker,
+- App di động (domains/carbon/di-dong): Flutter SDK và Dart SDK (BSD-3-Clause), forui (MIT) với forui_lucide (MIT) và
+  bộ biểu tượng Lucide (ISC), sugar (MIT), material_ui, http, camera, image_picker,
   ffi (BSD-3-Clause), flutter_appauth (BSD-3-Clause) với AppAuth-iOS và AppAuth-Android (Apache-2.0),
   flutter_secure_storage (BSD-3-Clause) với Tink (Apache-2.0), flutter_zxing (MIT) với zxing-cpp (Apache-2.0) và
   libzint (BSD-3-Clause), image (MIT), CameraX (Apache-2.0). Tệp dự án do Flutter/Xcode sinh trong

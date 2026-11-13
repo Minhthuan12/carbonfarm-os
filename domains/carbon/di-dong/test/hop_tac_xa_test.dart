@@ -20,7 +20,14 @@ import 'du_lieu_gia.dart';
 
 const goc = 'https://gateway.test';
 
-Widget boc(Widget w) => MaterialApp(theme: giaoDien(), home: w);
+Widget boc(Widget w) => ungDungCarbonFarm(home: w);
+
+/// Dựng màn hình trên khung cao như điện thoại để nội dung dài (ví, danh sách lô) không nằm ngoài màn thử.
+Future<void> dung(WidgetTester t, Widget w) async {
+  await t.binding.setSurfaceSize(const Size(800, 2400));
+  addTearDown(() => t.binding.setSurfaceSize(null));
+  await t.pumpWidget(w);
+}
 
 HopTacXaApi htx(MockClientHandler xuLy, {String? token = 'tk'}) =>
     HopTacXaApi(GraphqlClient(goc: goc, layToken: () async => token, client: MockClient(xuLy)));
@@ -202,6 +209,14 @@ void main() {
     });
   });
 
+  test('số sê-ri trong câu dùng gạch nối không ngắt dòng, phần còn lại giữ nguyên', () {
+    expect(
+      giuSeriLien('Tín chỉ MCK-DM01-26-0000000016 hiện thuộc HTX'),
+      'Tín chỉ MCK\u2011DM01\u201126\u20110000000016 hiện thuộc HTX',
+    );
+    expect(giuSeriLien('SHA-256 khớp'), 'SHA-256 khớp');
+  });
+
   test('ngày ISO hiển thị dd/mm/yyyy', () {
     expect(ngayVn('2026-04-01'), '01/04/2026');
     expect(ngayVn('2026-10-31T00:00:00+07:00'), '31/10/2026');
@@ -216,7 +231,7 @@ void main() {
       // Màn rộng: font thử (Ahem) vẽ chữ rất to, màn hẹp thì thẻ nào cũng bị chữ đẩy ra hết chiều rộng
       await t.binding.setSurfaceSize(const Size(1000, 2000));
       addTearDown(() => t.binding.setSurfaceSize(null));
-      await t.pumpWidget(man());
+      await dung(t, man());
       await t.pumpAndSettle();
 
       expect(find.text('01/10/2026 → 31/10/2026'), findsOneWidget);
@@ -232,7 +247,7 @@ void main() {
       expect(t.widget<Text>(find.text('Đã ghi sổ cái')).style?.color, mauChinhDam);
       expect(find.text('Khớp ảnh thực địa'), findsNothing);
 
-      final rong = find.byType(Card).evaluate().map((e) => e.size!.width).toList();
+      final rong = find.byType(TheNoiDung).evaluate().map((e) => e.size!.width).toList();
       expect(rong.toSet(), hasLength(1), reason: 'thẻ thông tin lô và mọi thẻ kỳ đo giãn hết chiều rộng: $rong');
     });
   });
@@ -249,12 +264,12 @@ void main() {
     );
 
     testWidgets('chưa đăng nhập → nút Đăng nhập', (t) async {
-      await t.pumpWidget(man(PhienGia(daDangNhap: false), (_) async => json(tongQuanGraphql())));
+      await dung(t, man(PhienGia(daDangNhap: false), (_) async => json(tongQuanGraphql())));
       expect(find.text('Đăng nhập'), findsOneWidget);
     });
 
     testWidgets('đã đăng nhập → ví (đã cấp/đã bán/trong ví) và lô đất', (t) async {
-      await t.pumpWidget(man(PhienGia(), (_) async => json(tongQuanGraphql())));
+      await dung(t, man(PhienGia(), (_) async => json(tongQuanGraphql())));
       await t.pumpAndSettle();
       expect(find.text('HTX Mẫu Đất Mũi'), findsOneWidget);
       expect(
@@ -262,16 +277,15 @@ void main() {
         2,
         reason: 'tên dài xuống 2 dòng, không cắt ở 1 dòng',
       );
-      expect(find.text('18'), findsOneWidget);
-      expect(find.text('8'), findsOneWidget);
-      expect(find.text('10'), findsOneWidget);
+      String so(String khoa) => t.widget<Text>(find.byKey(Key(khoa))).data!;
+      expect((so('so-da-cap'), so('so-da-ban'), so('so-trong-vi')), ('18', '8', '10'));
       expect(find.text('Lô đất (2)'), findsOneWidget);
       expect(find.text('Lô Đất Mũi 2'), findsOneWidget);
       expect(find.textContaining('8,87 ha · trồng 2021 · Xã viên Mẫu 2'), findsOneWidget);
     });
 
     testWidgets('danh sách rỗng → thông báo ví trống và chưa có lô', (t) async {
-      await t.pumpWidget(man(PhienGia(), (_) async => json(tongQuanGraphql(rong: true))));
+      await dung(t, man(PhienGia(), (_) async => json(tongQuanGraphql(rong: true))));
       await t.pumpAndSettle();
       expect(find.text('Ví hiện chưa có tín chỉ khả dụng.'), findsOneWidget);
       expect(find.textContaining('chưa có lô đất nào'), findsOneWidget);
@@ -279,7 +293,7 @@ void main() {
 
     testWidgets('401 → bỏ phiên, quay về màn đăng nhập kèm lời nhắn', (t) async {
       final phien = PhienGia();
-      await t.pumpWidget(man(phien, (_) async => http.Response('', 401)));
+      await dung(t, man(phien, (_) async => http.Response('', 401)));
       await t.pumpAndSettle();
       expect(phien.soLanHuy, 1);
       expect(find.text('Đăng nhập'), findsOneWidget);
@@ -288,7 +302,8 @@ void main() {
 
     testWidgets('mất mạng → "Mất kết nối" và nút Thử lại tải lại được', (t) async {
       var lan = 0;
-      await t.pumpWidget(
+      await dung(
+        t,
         man(PhienGia(), (_) async {
           if (lan++ == 0) throw const SocketException('mất mạng');
           return json(tongQuanGraphql());
