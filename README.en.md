@@ -112,7 +112,7 @@ The MVP covers one ecosystem (mangroves) and one sample area; **cooperative data
   </tr>
 </table>
 
-Screenshots use fake data; the background contains modified Copernicus Sentinel data (2026). Demo script (Vietnamese): [`docs/demo/kich-ban-15-phut.md`](docs/demo/kich-ban-15-phut.md).
+Screenshots use fake data; the background contains modified Copernicus Sentinel data (2026). To run the demo flow yourself (Vietnamese): [`docs/demo/huong-dan-demo.md`](docs/demo/huong-dan-demo.md).
 
 **Mobile app (Flutter):** two tabs. "Hợp tác xã" (Cooperative, login required) shows the credit wallet and plots; "Kiểm chứng" (Verify, no login) lets you type a serial or scan a QR code. Screen details (Vietnamese): [`domains/carbon/di-dong/README.md`](domains/carbon/di-dong/README.md).
 
@@ -317,7 +317,7 @@ Documentation site (searchable, Vietnamese): https://carbonfarm-os.github.io/car
 | [`docs/thu-nghiem.md`](docs/thu-nghiem.md) | Six-task trial guide |
 | [`docs/trien-khai.md`](docs/trien-khai.md) | Public demo deployment |
 | [`docs/viet-mien.md`](docs/viet-mien.md) | Writing a new business domain (plug-in) |
-| [`docs/demo/kich-ban-15-phut.md`](docs/demo/kich-ban-15-phut.md) | 15-minute demo script |
+| [`docs/demo/huong-dan-demo.md`](docs/demo/huong-dan-demo.md) | Demo guide: data preparation, step-by-step flow, expected results |
 | [`docs/roadmap.md`](docs/roadmap.md) | Roadmap |
 
 ## Contributing

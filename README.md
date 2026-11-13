@@ -110,7 +110,7 @@ Bản MVP gồm một hệ sinh thái (rừng ngập mặn) và một khu vực 
   </tr>
 </table>
 
-Ảnh dùng dữ liệu giả; ảnh nền chứa dữ liệu Copernicus Sentinel đã qua xử lý (2026). Kịch bản trình bày: [`docs/demo/kich-ban-15-phut.md`](docs/demo/kich-ban-15-phut.md).
+Ảnh dùng dữ liệu giả; ảnh nền chứa dữ liệu Copernicus Sentinel đã qua xử lý (2026). Chạy lại luồng demo trên máy mình: [`docs/demo/huong-dan-demo.md`](docs/demo/huong-dan-demo.md).
 
 **App di động (Flutter):** có hai thẻ. Thẻ "Hợp tác xã" (đăng nhập) hiện ví tín chỉ và lô đất; thẻ "Kiểm chứng" (không cần đăng nhập) cho gõ sê-ri hoặc quét QR. Mô tả từng màn: [`domains/carbon/di-dong/README.md`](domains/carbon/di-dong/README.md).
 
@@ -315,7 +315,7 @@ Trang tài liệu (có tìm kiếm): https://carbonfarm-os.github.io/carbonfarm-
 | [`docs/thu-nghiem.md`](docs/thu-nghiem.md) | Hướng dẫn dùng thử theo sáu nhiệm vụ |
 | [`docs/trien-khai.md`](docs/trien-khai.md) | Triển khai demo công khai |
 | [`docs/viet-mien.md`](docs/viet-mien.md) | Viết một miền nghiệp vụ mới (cắm–rút) |
-| [`docs/demo/kich-ban-15-phut.md`](docs/demo/kich-ban-15-phut.md) | Kịch bản trình bày 15 phút |
+| [`docs/demo/huong-dan-demo.md`](docs/demo/huong-dan-demo.md) | Hướng dẫn chạy lại demo: chuẩn bị dữ liệu, luồng từng bước, kết quả mong đợi |
 | [`docs/roadmap.md`](docs/roadmap.md) | Lộ trình |
 
 ## Đóng góp

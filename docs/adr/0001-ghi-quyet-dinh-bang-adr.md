@@ -10,7 +10,7 @@
 Đội mới, ít thời gian, phải giải thích được mọi lựa chọn công nghệ trước giám khảo. Mỗi thành viên cần một bằng chứng viết tay cho phần mình phụ trách.
 
 ## Quyết định
-Mỗi quyết định có ảnh hưởng lâu dài là một tệp `docs/adr/NNNN-ten.md` theo mẫu `0000-mau.md` (dạng MADR rút gọn), đi kèm PR thực hiện nó. Người viết ADR là người trình bày phần đó ở chung kết.
+Mỗi quyết định có ảnh hưởng lâu dài là một tệp `docs/adr/NNNN-ten.md` theo mẫu `0000-mau.md` (dạng MADR rút gọn), đi kèm PR thực hiện nó. Người viết ADR là người nắm rõ và giải thích được quyết định đó.
 
 Ba ADR đầu do thành viên viết trong sprint 1:
 - **0002** stack và giấy phép từng thành phần;
