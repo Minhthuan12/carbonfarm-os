@@ -57,6 +57,25 @@ Trạng thái: ✔ đang chạy · ◐ đã chọn, đang dựng · ☐ dự ki�
 | Inter (`@fontsource-variable/inter`) | 5.3.0 | OFL-1.1 | github.com/rsms/inter · github.com/fontsource/font-files | Chữ thân và điều khiển web, có bộ ký tự tiếng Việt |
 | Gói gián tiếp của web (104 gói, `domains/carbon/web/package-lock.json`) | — | MIT, ISC, Apache-2.0, BSD-2/3, MPL-2.0 (`lightningcss`, chỉ lúc build; tương thích GPL-3.0), MIT OR Apache-2.0 – đều OSI | npm | |
 
+**App di động** (`domains/carbon/di-dong`, ADR 0009). Giấy phép đọc từ tệp LICENSE trong gói pub ngày 13/11/2026.
+
+| Thành phần | Phiên bản | Giấy phép | Nguồn | Dùng ở |
+|---|---|---|---|---|
+| Flutter SDK (engine, framework, Dart SDK) | 3.50.0 / Dart 3.14.0 | BSD-3-Clause | github.com/flutter/flutter | Khung app Android + iOS |
+| material_ui | 1.11.0 | BSD-3-Clause | github.com/flutter/packages | Thành phần giao diện Material |
+| http | 1.6.0 | BSD-3-Clause | github.com/dart-lang/http | Gọi GraphQL và API kiểm chứng |
+| flutter_appauth | 13.0.0 | BSD-3-Clause | github.com/MaikuB/flutter_appauth | Đăng nhập OIDC + PKCE qua trình duyệt hệ thống |
+| AppAuth-iOS / AppAuth-Android (`net.openid:appauth`) | 3.0.0 / 0.11.1 | Apache-2.0 | github.com/openid/AppAuth-iOS · github.com/openid/AppAuth-Android | Thư viện native của flutter_appauth |
+| flutter_secure_storage | 11.2.0 | BSD-3-Clause | github.com/juliansteenbakker/flutter_secure_storage | Cất refresh token trong Keychain / Keystore |
+| Tink (`com.google.crypto.tink:tink-android`) | 1.23.0 | Apache-2.0 | github.com/tink-crypto/tink-java | Mã hoá của flutter_secure_storage trên Android |
+| flutter_zxing | 3.1.1 | MIT | github.com/khoren93/flutter_zxing | Quét mã QR trên máy (không gửi ảnh đi) |
+| zxing-cpp, libzint (mã nguồn kèm flutter_zxing) | theo flutter_zxing 3.1.1 | Apache-2.0 / BSD-3-Clause | github.com/zxing-cpp/zxing-cpp · github.com/zint/zint | Giải mã QR |
+| camera (+ camera_android_camerax, camera_avfoundation), image_picker, image, ffi | 0.12.2, 1.2.4, 4.12.0, 2.2.0 | BSD-3-Clause (image: MIT) | github.com/flutter/packages · github.com/brendan-duncan/image · github.com/dart-lang/native | Phụ thuộc của flutter_zxing; CameraX trên Android (Apache-2.0) |
+| Gói gián tiếp còn lại (khoảng 60 gói, `domains/carbon/di-dong/pubspec.lock`) | — | BSD-3-Clause, MIT, Apache-2.0 (`clock`, `material_color_utilities`) – đều OSI | pub.dev | |
+| flutter_lints, flutter_launcher_icons (chỉ lúc phát triển) | 6.0.0 / 0.14.4 | BSD-3-Clause / MIT | pub.dev | Lint; sinh biểu tượng app từ logo đội |
+
+Đội **không** dùng `mobile_scanner`: bản Android của nó kéo Google ML Kit (SDK đóng, điều khoản riêng của Google), không hợp với app GPL-3.0 phát hành APK. Dùng flutter_zxing (zxing-cpp, nguồn mở) thay thế.
+
 ## 3. Công cụ phát triển (không nằm trong sản phẩm)
 
 | Công cụ | Giấy phép | Dùng cho |
@@ -86,3 +105,4 @@ Trạng thái: ✔ đang chạy · ◐ đã chọn, đang dựng · ☐ dự ki�
 | MinIO | Repo đã lưu trữ (archived) 04/2026, bản cộng đồng không còn phát hành | Versity S3 Gateway |
 | Google Earth Engine | Dịch vụ đám mây độc quyền; BTC cho phép dịch vụ ngoài, đội chọn STAC + GDAL để tái lập được | Copernicus STAC + GDAL/rasterio |
 | `metabase/metabase-enterprise` | Metabase Commercial License | `metabase/metabase` (AGPL-3.0) |
+| `mobile_scanner` (app di động) | Bản Android kéo Google ML Kit, SDK đóng, không OSI | flutter_zxing (zxing-cpp, Apache-2.0) |

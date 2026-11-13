@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
-# CI trên mọi PR vào main: task check (SPDX + compose) và task lint.
+# CI trên mọi PR vào main: task check (SPDX + compose), task lint, web, app di động, trang tài liệu.
 name: ci
 on:
   pull_request:
@@ -45,6 +45,28 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run check
       - run: npm run build
+
+  di-dong:
+    # App di động Flutter (domains/carbon/di-dong, ADR 0009): analyze, test, build APK (Android SDK có sẵn trên runner)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: domains/carbon/di-dong
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.50.0
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build apk --release
 
   tai-lieu:
     # Trang tài liệu Starlight (docs-site/): chép nội dung từ docs/ rồi build HTML tĩnh
