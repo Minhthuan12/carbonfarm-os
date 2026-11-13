@@ -86,6 +86,7 @@ Trạng thái: ✔ đang chạy · ◐ đã chọn, đang dựng · ☐ dự ki�
 | pre-commit, ruff, yamllint | MIT / MIT / GPL-3.0 | Kiểm trước commit |
 | release-please | Apache-2.0 | CHANGELOG, phiên bản, Release |
 | Syft (anchore/sbom-action) | Apache-2.0 | SBOM CycloneDX |
+| subosito/flutter-action v2.23.0 (ghim theo commit) | MIT | Cài Flutter 3.50.0 trên GitHub Actions để build APK |
 | Starlight 0.42.7 + Astro 7.4.2 (`docs-site/`, ~350 gói gián tiếp trong `docs-site/package-lock.json`: MIT, Apache-2.0, MPL-2.0, ISC, BSD-2/3, BlueOak-1.0.0, CC0-1.0, 0BSD, PSF-2.0; libvips LGPL-3.0-or-later qua `sharp` – đều OSI) | MIT | Trang tài liệu tĩnh, chỉ chạy lúc build (ADR 0008) |
 
 ## 4. Dữ liệu

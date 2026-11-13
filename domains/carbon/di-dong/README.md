@@ -50,6 +50,7 @@ flutter build ios --release --no-codesign      # chỉ trên macOS
 
 Muốn APK hay bản iOS trỏ tới gateway khác thì thêm `--dart-define=API_URL=https://...` vào lệnh build.
 
+- Không có Android SDK trên máy cũng được: CI (job `di-dong`) build APK ở mọi PR, tải từ mục Artifacts (`carbonfarm-apk`) của lần chạy. Mỗi bản phát hành có sẵn `carbonfarm-X.Y.Z.apk` trong GitHub Release, mã băm ghi trong `SHA256SUMS`.
 - APK release đang ký bằng khóa debug: cài thử được, chưa lên được Google Play.
 - Lên TestFlight cần đặt DEVELOPMENT_TEAM của đội trong Xcode; trong repo để trống.
 

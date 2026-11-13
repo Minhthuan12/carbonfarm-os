@@ -42,5 +42,5 @@ Dùng Flutter trong `domains/carbon/di-dong/` (Tầng 2, miền carbon). Bundle/
 - App giữ access token trong bộ nhớ. Refresh token nằm trong Keychain/Keystore (`flutter_secure_storage`). App không thấy mật khẩu vì việc đăng nhập diễn ra trên trang Keycloak.
 - Địa chỉ gateway đổi lúc build bằng `--dart-define=API_URL=...`; mặc định là bản demo công khai.
 - Kiểm SPDX vẫn dùng `scripts/spdx.py`, nay hiểu thêm Dart/Kotlin/Swift/XML. Tệp do Flutter/Xcode sinh và tự ghi đè được bỏ qua và khai ở `NOTICE`.
-- CI có job `di-dong`: `flutter analyze`, `flutter test`, build APK trên Ubuntu. Build iOS chỉ chạy trên máy macOS của đội (`flutter build ios --no-codesign`).
+- APK chỉ build trên GitHub Actions (runner Ubuntu có sẵn Android SDK); máy dev của đội không cài Android SDK. Job `di-dong` của CI chạy `flutter analyze`, `flutter test`, `flutter build apk --release` và tải APK lên artifact `carbonfarm-apk`. Khi phát hành, workflow release-please build APK theo tag, đính `carbonfarm-X.Y.Z.apk` vào Release cùng `.tar.gz` và ghi vào `SHA256SUMS`. Build iOS chỉ chạy trên máy macOS của đội (`flutter build ios --no-codesign`).
 - APK release tạm ký bằng khóa debug, đủ để cài thử nhưng chưa lên được Google Play. Lên TestFlight cần tài khoản Apple Developer của đội và DEVELOPMENT_TEAM (đang để trống trong repo).

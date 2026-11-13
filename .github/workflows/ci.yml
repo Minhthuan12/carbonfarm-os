@@ -47,7 +47,8 @@ jobs:
       - run: npm run build
 
   di-dong:
-    # App di động Flutter (domains/carbon/di-dong, ADR 0009): analyze, test, build APK (Android SDK có sẵn trên runner)
+    # App di động Flutter (domains/carbon/di-dong, ADR 0009): analyze, test, build APK release trên runner Ubuntu
+    # (Android SDK có sẵn; máy dev không cài SDK). APK tải lên artifact "carbonfarm-apk" để cài thử.
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -58,7 +59,8 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - uses: subosito/flutter-action@v2
+      # subosito/flutter-action (MIT) ghim theo commit của tag v2.23.0; Flutter ghim 3.50.0
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2  # v2.23.0
         with:
           channel: stable
           flutter-version: 3.50.0
@@ -67,6 +69,12 @@ jobs:
       - run: flutter analyze
       - run: flutter test
       - run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: carbonfarm-apk
+          path: domains/carbon/di-dong/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
 
   tai-lieu:
     # Trang tài liệu Starlight (docs-site/): chép nội dung từ docs/ rồi build HTML tĩnh

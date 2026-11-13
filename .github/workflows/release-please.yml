@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Phát hành: release-please đọc Conventional Commits trên main, mở "PR phát hành" (CHANGELOG + số phiên bản).
-# Merge PR đó → tag vX.Y.Z + GitHub Release; job sau đính kèm .tar.gz (git archive), SHA256SUMS và SBOM CycloneDX (Syft).
+# Merge PR đó → tag vX.Y.Z + GitHub Release; job sau đính kèm .tar.gz (git archive), APK app di động (Flutter),
+# SHA256SUMS (của .tar.gz và APK) và SBOM CycloneDX (Syft).
 name: release-please
 on:
   push:
@@ -29,13 +30,32 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2  # v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.50.0
+      - name: APK app di động
+        # Tên phiên bản lấy từ tag (pubspec.yaml không do release-please sửa); build number tăng theo lần chạy.
+        # APK ký bằng khóa debug (ADR 0009): cài thử được, chưa dùng cho Google Play.
+        working-directory: domains/carbon/di-dong
+        env:
+          TAG: ${{ needs.release-please.outputs.tag }}
+        run: |
+          V="${TAG#v}"
+          flutter pub get
+          flutter build apk --release --build-name="$V" --build-number="${{ github.run_number }}"
+          cp build/app/outputs/flutter-apk/app-release.apk "$GITHUB_WORKSPACE/carbonfarm-$V.apk"
       - name: Gói nguồn và SHA256SUMS
         env:
           TAG: ${{ needs.release-please.outputs.tag }}
         run: |
           V="${TAG#v}"
           git archive --format=tar.gz --prefix="carbonfarm-os-$V/" -o "carbonfarm-os-$V.tar.gz" "$TAG"
-          sha256sum "carbonfarm-os-$V.tar.gz" > SHA256SUMS
+          sha256sum "carbonfarm-os-$V.tar.gz" "carbonfarm-$V.apk" > SHA256SUMS
       - name: SBOM CycloneDX
         uses: anchore/sbom-action@v0
         with:
@@ -47,4 +67,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ needs.release-please.outputs.tag }}
-        run: gh release upload "$TAG" carbonfarm-os-*.tar.gz SHA256SUMS sbom.cdx.json --clobber
+        run: gh release upload "$TAG" carbonfarm-os-*.tar.gz carbonfarm-*.apk SHA256SUMS sbom.cdx.json --clobber
