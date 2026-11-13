@@ -4,6 +4,9 @@ extends: default
 ignore: |
   .pixi/
   node_modules/
+  # tệp sinh khi build app di động Flutter (ngoài git)
+  build/
+  .dart_tool/
   # đoạn route được ghép vào danh sách routes của APISIX, cố ý thụt lề 2
   domains/*/gateway/routes.yaml
 rules:

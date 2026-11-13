@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Lint của app di động: bộ luật khuyến nghị của Flutter (flutter_lints). Kiểm bằng `flutter analyze`.
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+
+linter:
+  rules:
+    prefer_single_quotes: true

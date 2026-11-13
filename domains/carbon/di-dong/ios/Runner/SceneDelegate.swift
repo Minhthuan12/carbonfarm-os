@@ -1,0 +1,8 @@
+// SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+import Flutter
+import UIKit
+
+class SceneDelegate: FlutterSceneDelegate {
+
+}

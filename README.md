@@ -77,6 +77,8 @@ Bản MVP: một hệ sinh thái (rừng ngập mặn), một khu vực mẫu, *
 
 **Demo công khai:** https://carbonfarm.dzfullstack.com (dữ liệu giả; tra tín chỉ không cần tài khoản: https://carbonfarm.dzfullstack.com/kiem-chung). Tự triển khai trên máy chủ: [`docs/trien-khai.md`](docs/trien-khai.md).
 
+**App di động (Flutter, Android + iOS):** cán bộ hợp tác xã xem lô đất và ví tín chỉ; ai cũng quét QR hoặc gõ sê-ri để kiểm chứng. Hướng dẫn chạy và build: [`domains/carbon/di-dong/`](domains/carbon/di-dong/README.md).
+
 <table>
   <tr>
     <td width="50%"><img src="docs/images/demo/01-trang-chu.webp" alt="Trang chủ công khai của CarbonFarm OS"><br>1. [H] Trang chủ công khai – giới thiệu luồng và thẻ tài khoản mẫu</td>
@@ -136,6 +138,7 @@ carbonfarm-os/
 │   ├── db/                #   migration, ràng buộc chống sai, dữ liệu giả
 │   ├── mrv/               #   MRV engine Python (Sentinel-2 → NDVI → CO₂e)
 │   ├── web/               #   web SvelteKit + MapLibre
+│   ├── di-dong/           #   app di động Flutter (Android + iOS)
 │   ├── dashboard/         #   script dựng dashboard Metabase
 │   ├── keycloak/          #   người dùng mẫu của miền
 │   └── gateway/           #   route APISIX của miền

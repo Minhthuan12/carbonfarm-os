@@ -1,0 +1,24 @@
+{
+  "ifResourceExists": "SKIP",
+  "clients": [
+    {
+      "clientId": "carbon-di-dong",
+      "name": "App di động CarbonFarm (Tầng 2, miền carbon)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": false,
+      "redirectUris": [
+        "vn.carbonfarmos.app:/oauth"
+      ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "vn.carbonfarmos.app:/oauth"
+      }
+    }
+  ]
+}
