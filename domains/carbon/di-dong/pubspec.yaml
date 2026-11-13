@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+# App di động CarbonFarm (Tầng 2, miền carbon). Giấy phép từng thư viện: DEPENDENCIES.md (mục "App di động").
+name: carbonfarm
+description: "App di động CarbonFarm OS: lô đất, ví tín chỉ của hợp tác xã và kiểm chứng sê-ri công khai."
+publish_to: 'none'
+# Khớp phiên bản repo (release-please). Số sau "+" là build number cho cửa hàng ứng dụng.
+version: 0.7.0+1
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  material_ui: ^1.1.0
+  http: ^1.6.0
+  flutter_appauth: ^13.0.0
+  flutter_secure_storage: ^11.2.0
+  flutter_zxing: ^3.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo.png
+
+# Sinh biểu tượng app: dart run flutter_launcher_icons (ảnh nguồn sinh từ logo đội, nền trắng, không kênh alpha)
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/icon-app.png
+  remove_alpha_ios: true
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: assets/icon-foreground.png

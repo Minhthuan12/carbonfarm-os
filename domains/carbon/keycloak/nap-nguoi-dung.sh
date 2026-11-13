@@ -1,7 +1,8 @@
 #!/bin/bash
 # SPDX-FileCopyrightText: 2026 CarbonFarm OS contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Nạp người dùng MẪU của miền carbon vào realm dxos bằng partial import (id cố định để khớp dữ liệu giả).
+# Nạp người dùng MẪU của miền carbon vào realm dxos bằng partial import (id cố định để khớp dữ liệu giả), và client
+# công khai của app di động (client-di-dong.json).
 # Đã có thì bỏ qua (SKIP). Mật khẩu do OpenBao sinh (/run/bimat), không nằm trong repo, không in ra.
 set -euo pipefail
 KC=/opt/keycloak/bin/kcadm.sh
@@ -17,5 +18,8 @@ sed -e "s/__MK_CANBO__/$(cat /run/bimat/mk-canbo-htx-mau)/" \
 # theo ngôn ngữ trình duyệt (Accept-Language) và trình duyệt tiếng Anh lại thấy trang tiếng Anh.
 $KC update realms/dxos -s internationalizationEnabled=true -s 'supportedLocales=["vi"]' -s defaultLocale=vi
 $KC create partialImport -r dxos -f "$TAM" -o --fields added,skipped >/dev/null
+# Client công khai của app di động (OIDC + PKCE, redirect vn.carbonfarmos.app:/oauth). Đã có thì bỏ qua (SKIP), nên chạy
+# lại không sao và realm của bản demo cũ cũng nhận client mới. Client "web" ở Tầng 1 không bị đụng tới.
+$KC create partialImport -r dxos -f /client-di-dong.json -o --fields added,skipped >/dev/null
 rm -f "$TAM"
 echo "carbon: đã nạp người dùng mẫu (bỏ qua nếu đã có)"

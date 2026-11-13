@@ -27,14 +27,20 @@ KIEU_CHU_THICH: dict[str, tuple[str, str]] = {
     ".sql": ("-- ", ""), ".ts": ("// ", ""), ".js": ("// ", ""), ".mjs": ("// ", ""),
     ".css": ("/* ", " */"), ".md": ("<!-- ", " -->"), ".svelte": ("<!-- ", " -->"),
     ".html": ("<!-- ", " -->"),
+    # App di động Flutter (domains/carbon/di-dong)
+    ".dart": ("// ", ""), ".kt": ("// ", ""), ".kts": ("// ", ""), ".swift": ("// ", ""), ".h": ("// ", ""),
+    ".xcconfig": ("// ", ""), ".properties": ("# ", ""), ".xml": ("<!-- ", " -->"), ".plist": ("<!-- ", " -->"),
 }
 TEN_DAC_BIET: dict[str, tuple[str, str]] = {
     "Dockerfile": ("# ", ""), ".gitignore": ("# ", ""), ".dockerignore": ("# ", ""),
     "CODEOWNERS": ("# ", ""), ".gitattributes": ("# ", ""), ".npmrc": ("# ", ""),
 }
 # CHANGELOG.md do release-please sinh và ghi đè mỗi lần phát hành
-BO_QUA_TEN = {"LICENSE", "NOTICE", "pixi.lock", "CHANGELOG.md"}
-BO_QUA_DUOI = {".json", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".ico", ".tif", ".tiff", ".lock", ".woff2"}
+# Tệp do Flutter/Xcode sinh và ghi đè (chú thích thêm vào sẽ mất khi công cụ ghi lại): .metadata, project.pbxproj,
+# storyboard, scheme, workspace, Package.resolved (khóa phiên bản Swift Package Manager). Giấy phép của chúng ghi ở NOTICE (mục app di động).
+BO_QUA_TEN = {"LICENSE", "NOTICE", "pixi.lock", "CHANGELOG.md", ".metadata", "IDEWorkspaceChecks.plist"}
+BO_QUA_DUOI = {".json", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".ico", ".tif", ".tiff", ".lock", ".woff2",
+               ".pbxproj", ".xcworkspacedata", ".xcsettings", ".xcscheme", ".storyboard", ".resolved"}
 
 
 def danh_sach_tep() -> list[Path]:
@@ -61,11 +67,12 @@ def co_header(noi_dung: str) -> bool:
 def them_header(p: Path, mo: str, dong: str) -> None:
     noi_dung = p.read_text(encoding="utf-8")
     header = f"{mo}{BAN_QUYEN}{dong}\n{mo}{GIAY_PHEP}{dong}\n"
-    dong_dau = noi_dung.split("\n", 1)
-    if noi_dung.startswith("#!") and len(dong_dau) == 2:
-        noi_dung = dong_dau[0] + "\n" + header + dong_dau[1]
-    else:
-        noi_dung = header + noi_dung
+    dong = noi_dung.split("\n")
+    # Giữ shebang và khai báo XML (<?xml ...?>, <!DOCTYPE ...>) ở đầu tệp: chúng phải đứng trước mọi chú thích
+    i = 0
+    while i < len(dong) and (dong[i].startswith("#!") and i == 0 or dong[i].startswith(("<?xml", "<!DOCTYPE"))):
+        i += 1
+    noi_dung = "\n".join(dong[:i] + [header.rstrip("\n")] + dong[i:])
     p.write_text(noi_dung, encoding="utf-8")
 
 
