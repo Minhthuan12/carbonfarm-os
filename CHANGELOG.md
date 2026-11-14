@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.8.0](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.7.0...v0.8.0) (2026-11-13)
+
+
+### Tính năng mới
+
+* **di-dong:** app Flutter cho nông dân và hợp tác xã ([#102](https://github.com/carbonfarm-os/carbonfarm-os/issues/102)) ([fed74ba](https://github.com/carbonfarm-os/carbonfarm-os/commit/fed74baef0f1afbce7a5a67fe0c69ae5e0d109a9))
+* **di-dong:** giao diện mới dùng forui, trang đăng nhập CarbonFarm và ảnh màn hình ([#110](https://github.com/carbonfarm-os/carbonfarm-os/issues/110)) ([da487dc](https://github.com/carbonfarm-os/carbonfarm-os/commit/da487dcb33d16b6e5875abb16a3fa68a7318aa3b))
+
+
+### Tài liệu
+
+* **demo:** thay kịch bản trình bày bằng hướng dẫn chạy demo ([#107](https://github.com/carbonfarm-os/carbonfarm-os/issues/107)) ([3c33aa8](https://github.com/carbonfarm-os/carbonfarm-os/commit/3c33aa8cb9f0aea7dfcc158c5558620b7a13dfa8))
+* **readme:** viết lại README theo bố cục mới, thêm bản tiếng Anh ([#105](https://github.com/carbonfarm-os/carbonfarm-os/issues/105)) ([0ecc9b1](https://github.com/carbonfarm-os/carbonfarm-os/commit/0ecc9b140ab2992e205daa789e95e634e440ef10))
+
 ## [0.7.0](https://github.com/carbonfarm-os/carbonfarm-os/compare/v0.6.0...v0.7.0) (2026-11-12)
 
 
